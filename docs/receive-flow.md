@@ -105,7 +105,7 @@ PII**. Amounts are bucketed via `amount_bucket`: `'<1' | '1-10' | '10-100' | '>1
 
 - [NFC library ADR](adr-nfc-library.md) — payload size/encoding constraints the
   payment request payload must respect.
-- [Product flows & system definition](ding-payments.md) — payment payload
+- [Product flows & system definition](vela-overview.md) — payment payload
   structure this flow builds on.
 - [Client MVP build plan](build-plan-client-mvp.md) — where C12 sits in the
   overall build.

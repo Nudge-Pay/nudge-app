@@ -1,6 +1,6 @@
 # Vela — Client MVP Build Plan (Consolidated)
 
-> **Executive backlog for `ding-payments/`** — 20 deliverables across 4 ETAs (stages).
+> **Executive backlog for `vela-payments/`** — 20 deliverables across 4 ETAs (stages).
 >
 > **Version: 1.2** · Date: 2026-06-17 · Scope: client MVP
 >
@@ -10,8 +10,8 @@
 
 **References**
 
-- Product spec: [ding-payments.md](./ding-payments.md)
-- Server consolidated plan: `ding-server/docs/server-build-plan-consolidated.md`
+- Product spec: [vela-overview.md](./vela-overview.md)
+- Server consolidated plan: `vela-server/docs/server-build-plan-consolidated.md`
 - Code layout: [FOLDER_LAYOUT](../.cursor/rules/FOLDER_LAYOUT.mdc)
 
 ---
@@ -24,7 +24,7 @@
 4. **Link dependencies** in the Issue sidebar or description: paste `Depends on: C##` and link sibling Issues.
 5. **Use atomic sub-tasks** as checklist items inside the Issue (or spawn sub-issues from the Atomic sub-task checklist table for parallel agents).
 6. **Acceptance criteria** are the merge gate — every checkbox must pass before closing the Issue.
-7. **Cross-repo:** When a deliverable lists Server coordination, open/link matching `S##` Issues in `ding-server`.
+7. **Cross-repo:** When a deliverable lists Server coordination, open/link matching `S##` Issues in `vela-server`.
 
 ### Field legend
 
@@ -56,7 +56,7 @@ See full diagram in [build-plan-client-mvp.md](./build-plan-client-mvp.md#client
 | `src/lib/` | Infra: env, HTTP, SecureKeyStore, analytics |
 | `src/components/ui/` | Reusable UI primitives |
 
-**Confirmed stack:** Expo 56 + React Native · expo-router · zustand · Zod · @stellar/stellar-sdk · react-native-nfc-manager · passkeys (per ADR) · expo-secure-store · EAS · ding-server REST (Phase 7).
+**Confirmed stack:** Expo 56 + React Native · expo-router · zustand · Zod · @stellar/stellar-sdk · react-native-nfc-manager · passkeys (per ADR) · expo-secure-store · EAS · vela-server REST (Phase 7).
 
 ---
 
@@ -125,7 +125,7 @@ The MVP plan marks CLI-001 as a hard blocker because the workflow currently call
 
 **Prerequisites**
 
-- Repository bootstrapped at ding-payments root
+- Repository bootstrapped at vela-payments root
 - GitHub Actions workflow available at .github/workflows/ci-client.yml
 - Node/npm toolchain available to run build and lint locally
 
@@ -314,7 +314,7 @@ C02 establishes the FOLDER_LAYOUT architecture for Expo Router + TypeScript by s
 8. Create `.env.example` with all required `EXPO_PUBLIC_` variables.
 9. Implement typed env loader and validations in `src/lib/env.ts`.
 10. Ensure `.env` remains ignored and README references `.env.example` bootstrap.
-11. Link primary docs (`docs/ding-payments.md`, build plan) from README.
+11. Link primary docs (`docs/vela-overview.md`, build plan) from README.
 
 **Acceptance criteria**
 
@@ -2029,7 +2029,7 @@ Use `useSendPayment` + `sendStore` as the state authority. Keep parsing/validati
 
 **Server coordination**
 
-Server is not required for primary settlement path; transaction submission must succeed directly against Horizon regardless of ding-server availability.
+Server is not required for primary settlement path; transaction submission must succeed directly against Horizon regardless of vela-server availability.
 
 **Security notes**
 
@@ -2334,7 +2334,7 @@ Keep data fetching/normalization in services and hooks (`TransactionHistoryServi
 
 **Server coordination**
 
-History remains Horizon-backed in MVP; no ding-server history endpoint dependency.
+History remains Horizon-backed in MVP; no vela-server history endpoint dependency.
 
 **Risks & pitfalls**
 
@@ -2367,13 +2367,13 @@ History remains Horizon-backed in MVP; no ding-server history endpoint dependenc
 
 **Executive summary**
 
-Integrate client with ding-server through typed HTTP clients, environment validation, resilient API error handling, and onboarding registration hooks.
+Integrate client with vela-server through typed HTTP clients, environment validation, resilient API error handling, and onboarding registration hooks.
 Ensure server-dependent functionality is additive (analytics/registration/health) while payment settlement remains available via Horizon when backend is degraded.
 Ship `docs/server-integration.md` with explicit endpoint contracts, TypeScript interfaces, sequence guidance, and error/retry policy for cross-repo alignment.
 
 **Product context**
 
-C16 introduces non-blocking but strategic backend integration. It must be robust enough for beta telemetry and identity correlation, yet cannot compromise the core peer-to-peer payment path. This deliverable defines the canonical client-server contract used for coordination with `ding-server` and future integration testing.
+C16 introduces non-blocking but strategic backend integration. It must be robust enough for beta telemetry and identity correlation, yet cannot compromise the core peer-to-peer payment path. This deliverable defines the canonical client-server contract used for coordination with `vela-server` and future integration testing.
 
 **User stories**
 
@@ -2388,7 +2388,7 @@ C16 introduces non-blocking but strategic backend integration. It must be robust
 - C02 env and configuration groundwork complete.
 - C06 passkey onboarding flow stable enough for registration hook integration.
 - C13 transaction submission path complete for notify hook insertion.
-- Agreement with ding-server team on endpoint schemas and versioning strategy.
+- Agreement with vela-server team on endpoint schemas and versioning strategy.
 
 **Atomic sub-task checklist**
 
@@ -2487,7 +2487,7 @@ Place HTTP primitives in `src/lib/` and feature-specific clients in their owning
 **Test plan**
 
 - **Unit:** HttpClient and ApiError tests; retry policy tests; endpoint client schema tests; onboarding sequence tests with mocked API availability.
-- **Manual:** Run with valid API URL against local ding-server; kill server mid-flow to verify non-blocking behavior; verify health indicator changes; inspect server logs for register/notify payloads.
+- **Manual:** Run with valid API URL against local vela-server; kill server mid-flow to verify non-blocking behavior; verify health indicator changes; inspect server logs for register/notify payloads.
 - **Device:** At least one physical device for onboarding and send notify path plus simulator/emulator for fast server-off fallback checks.
 
 **Server coordination**
@@ -2562,7 +2562,7 @@ Operational rule: endpoint failures never prevent on-chain settlement; they only
 
 **Security notes**
 
-- Do not send secrets/seed/private key material to ding-server endpoints.
+- Do not send secrets/seed/private key material to vela-server endpoints.
 - Treat credential identifiers as sensitive metadata and avoid verbose logging.
 - Validate endpoint payloads with schema checks before network call dispatch.
 - Ensure retry logic cannot duplicate unsafe operations or overwhelm server during outages.
@@ -3054,7 +3054,7 @@ Keep release artifacts in `docs/` and avoid embedding release policy in code. Me
 
 **Implementation guide**
 
-1. Register `ding://` scheme and add placeholder pay route with explicit post-MVP messaging.
+1. Register `Vela://` scheme and add placeholder pay route with explicit post-MVP messaging.
 2. Document deep-link format expectations and constraints in `docs/deep-links.md`.
 3. Write beta testing guide covering install steps, funded-wallet setup, device requirements, and bug report process.
 4. Add/update GitHub bug template to collect reproducible NFC/payment defect details.
@@ -3065,7 +3065,7 @@ Keep release artifacts in `docs/` and avoid embedding release policy in code. Me
 
 **Acceptance criteria**
 
-- [ ] App scheme `ding` is registered and test deep-link command resolves to app route.
+- [ ] App scheme `Vela` is registered and test deep-link command resolves to app route.
 - [ ] Placeholder `/pay` route exists and does not expose incomplete payment behavior.
 - [ ] `docs/deep-links.md` documents current scaffold scope and future format expectations.
 - [ ] `docs/beta-testing-guide.md` provides step-by-step tester onboarding instructions.
@@ -3167,7 +3167,7 @@ Coordinate metrics naming and notify assumptions with server/analytics consumers
 | `EXPO_PUBLIC_RPC_URL` | Mainnet | Soroban/RPC URL if used alongside Horizon |
 | `EXPO_PUBLIC_USDC_ISSUER_TESTNET` | USDC testnet | USDC testnet issuer account |
 | `EXPO_PUBLIC_USDC_ISSUER_MAINNET` | USDC mainnet | USDC mainnet issuer account |
-| `EXPO_PUBLIC_API_URL` | Phase 7+ (C16) | Base URL for ding-server REST |
+| `EXPO_PUBLIC_API_URL` | Phase 7+ (C16) | Base URL for vela-server REST |
 | `EXPO_PUBLIC_SENTRY_DSN` | Optional | Crash reporting (C19) |
 
 Never commit `.env`. Copy from `.env.example` at setup (C02).

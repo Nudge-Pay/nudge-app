@@ -21,7 +21,7 @@
 | Complexity | Easy / Medium / Hard |
 | Blocking | Hard=blocks subsequent phases, Soft=partial, None=does not block |
 | Depends on | Previous CLI IDs required |
-| Server contract | Endpoint ding-server if applicable |
+| Server contract | Endpoint vela-server if applicable |
 
 **Phase dependencies**
 
@@ -40,14 +40,14 @@ flowchart LR
 
 **References**
 
-- Product spec: [ding-payments.md](./ding-payments.md)
+- Product spec: [vela-overview.md](./vela-overview.md)
 - Code layout: [FOLDER_LAYOUT](../.cursor/rules/FOLDER_LAYOUT.mdc)
 
 ## Table of contents
 
 1. [Executive summary](#executive-summary)
 2. [Client architecture](#client-architecture)
-3. [ding-server contracts](#ding-server-contracts-client-integration)
+3. [vela-server contracts](#vela-server-contracts-client-integration)
 4. [Tasks by phase](#tasks-by-phase)
    - [Phase 0 — Scaffold & DX (CLI-001–012)](#phase-0--scaffold--developer-experience-e0)
    - [Phase 1 — Passkey Auth (CLI-013–026)](#phase-1--passkey-authentication-e1)
@@ -75,7 +75,7 @@ Vela offers peer-to-peer contactless (NFC) payments on Stellar with self-custodi
 - Passkeys for login and payment authorization
 - NFC P2P: receiver issues payment request, payer signs and sends tx
 - Basic history via Horizon
-- Optional integration with ding-server (registration, notify) without blocking settlement on-chain
+- Optional integration with vela-server (registration, notify) without blocking settlement on-chain
 - Development build EAS (NFC and passkeys do not work in Expo Go)
 
 **Excluded**
@@ -138,7 +138,7 @@ flowchart TB
   end
   subgraph External["External"]
   HORIZON[Stellar Horizon]
-  SERVER[ding-server REST]
+  SERVER[vela-server REST]
   NATIVE[NFC / Secure Enclave]
   end
   UI --> Features
@@ -173,9 +173,9 @@ flowchart TB
 | Auth | passkeys (lib according to ADR CLI-013) |
 | Secrets | expo-secure-store |
 | Build | EAS (development / preview / production) |
-| Server | ding-server NestJS REST (Phase 7) |
+| Server | vela-server NestJS REST (Phase 7) |
 
-## ding-server contracts (client integration)
+## vela-server contracts (client integration)
 
 Settlement is on-chain via Horizon. The server is auxiliary: identity/wallet registration and analytics.
 
@@ -263,7 +263,7 @@ Repo basics: Green CI, `src/features/` structure, EAS dev build, UI theme and na
 As a developer, I want the CI pipeline to pass through each PR so that I can detect regressions before merge.
 
 **Agent context**  
-The workflow `.github/workflows/ci-client.yml` runs `npm run build`, `npm run lint` and Prettier, but `package.json` does not define `build` nor does it have ESLint/Prettier installed. This task unlocks the entire quality flow. Current repo: Expo 56 scaffold in `ding-payments/`.
+The workflow `.github/workflows/ci-client.yml` runs `npm run build`, `npm run lint` and Prettier, but `package.json` does not define `build` nor does it have ESLint/Prettier installed. This task unlocks the entire quality flow. Current repo: Expo 56 scaffold in `vela-payments/`.
 
 **Scope**
 
@@ -510,7 +510,7 @@ Out of scope:
 As a new developer or agent, I want a project-specific README so that I can set up the environment without guessing.
 
 **Agent context**  
-Replace generic Expo README. Include: what is Vela, requirements (Node 20+, Xcode/Android Studio), setup, environment variables, how to run dev client (not Expo Go for NFC), links to docs/ding-payments.md and this build plan.
+Replace generic Expo README. Include: what is Vela, requirements (Node 20+, Xcode/Android Studio), setup, environment variables, how to run dev client (not Expo Go for NFC), links to docs/vela-overview.md and this build plan.
 
 **Scope**
 
@@ -1732,7 +1732,7 @@ Out of scope:
 As an agent or developer, I want documentation of the auth flow, to implement without re-reading code.
 
 **Agent context**  
-Document: mermaid diagram auth states, register sequence, integration with wallet, common errors, key files. Bind ADR passkey and ding-payments.md Authentication Model.
+Document: mermaid diagram auth states, register sequence, integration with wallet, common errors, key files. Bind ADR passkey and vela-overview.md Authentication Model.
 
 **Scope**
 
@@ -1805,7 +1805,7 @@ In scope:
 - Mock implementation
 
 Out of scope:
-- HTTP real a ding-server
+- HTTP real a vela-server
 - Token refresh
 
 **Files**
@@ -3032,7 +3032,7 @@ Out of scope:
 As an agent, I want to doc the wallet flow, to implement receive/send without rereading code.
 
 **Agent context**  
-docs/wallet-flow.md: mermaid passkey→keygen→fund→ready. Table files, env vars, errors. ADR links stellar-sdk and ding-payments.md.
+docs/wallet-flow.md: mermaid passkey→keygen→fund→ready. Table files, env vars, errors. ADR links stellar-sdk and vela-overview.md.
 
 **Scope**
 
@@ -6462,7 +6462,7 @@ Out of scope:
 
 ### Phase 7 — Server Integration (E7)
 
-HTTP client, ding-server endpoints for registration and notify. NFC payments do not depend on the server.
+HTTP client, vela-server endpoints for registration and notify. NFC payments do not depend on the server.
 
 ### CLI-097 — HttpClient base (fetch, timeout, headers)
 
@@ -6477,7 +6477,7 @@ HTTP client, ding-server endpoints for registration and notify. NFC payments do 
 | Server contract | — |
 
 **User story**  
-As a developer, I want HTTP client base so that call ding-server consistently.
+As a developer, I want HTTP client base so that call vela-server consistently.
 
 **Agent context**  
 HttpClient in src/lib/: get/post with EXPO_PUBLIC_API_URL, timeout 15s, JSON headers, AbortController. Generic typing ApiResponse<T>. No auth token MVP — pubkey in body.
@@ -7062,7 +7062,7 @@ Out of scope:
 | Server contract | — |
 
 **User story**  
-As an agent, I want doc server integration, to align with ding-server.
+As an agent, I want doc server integration, to align with vela-server.
 
 **Agent context**  
 docs/server-integration.md: endpoints, request/response TS, sequence diagrams, error codes, env vars. Link SERVER_CONTRACTS in build plan.
@@ -7783,15 +7783,15 @@ Out of scope:
 | Server contract | — |
 
 **User story**  
-As a developer, I want ding:// URL scheme prepared so that future payment links without routing refactor.
+As a developer, I want Vela:// URL scheme prepared so that future payment links without routing refactor.
 
 **Agent context**  
-app.config scheme ding. Placeholder route src/app/pay.tsx showing Coming Soon. Document intended deep link format ding://pay?...
+app.config scheme Vela. Placeholder route src/app/pay.tsx showing Coming Soon. Document intended deep link format Vela://pay?...
 
 **Scope**
 
 In scope:
-- URL scheme ding
+- URL scheme Vela
 - Placeholder /pay route
 - Doc format
 
@@ -8042,7 +8042,7 @@ Out of scope:
 | E4 | Receive Flow | 4 | CLI-061–072 | Charge via NFC |
 | E5 | SendFlow | 5 | CLI-073–086 | Pay via NFC + sign tx |
 | E6 | History | 6 | CLI-087–096 | Horizon txs list |
-| E7 | Server Integration | 7 | CLI-097–106 | REST ding-server |
+| E7 | Server Integration | 7 | CLI-097–106 | REST vela-server |
 | E8 | Hardening & Release | 8 | CLI-107–120 | A11y, E2E, production build |
 
 ### Blocking graph (hard blockers)
@@ -8100,7 +8100,7 @@ flowchart TD
 | `EXPO_PUBLIC_RPC_URL` | Mainnet | RPC if used in addition to Horizon |
 | `EXPO_PUBLIC_USDC_ISSUER_TESTNET` | USDC Testnet | USDC testnet issuer |
 | `EXPO_PUBLIC_USDC_ISSUER_MAINNET` | USDC Mainnet | USDC mainnet issuer |
-| `EXPO_PUBLIC_API_URL` | Phase 7+ | Base URL ding-server |
+| `EXPO_PUBLIC_API_URL` | Phase 7+ | Base URL vela-server |
 | `EXPO_PUBLIC_SENTRY_DSN` | Optional | Crash reporting |
 
 ### Appendix C — NFC device checklist
@@ -8115,7 +8115,7 @@ flowchart TD
 
 ### Appendix D — Spec → task mapping
 
-| ding-payments.md section | Main tasks |
+| vela-overview.md section | Main tasks |
 |----------------------------|-------------------|
 | Authentication Model | CLI-013–026 |
 | Wallet Architecture | CLI-027–044 |

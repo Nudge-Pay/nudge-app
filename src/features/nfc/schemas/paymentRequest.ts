@@ -1,7 +1,7 @@
 /**
  * Canonical payment-request payload for NFC transport (payment_request.v1).
  *
- * @see docs/ding-payments.md — Proposed Payment Payload Structure
+ * @see docs/vela-overview.md — Proposed Payment Payload Structure
  * @see docs/adr-nfc-library.md — payload size and encoding constraints
  */
 

@@ -92,4 +92,4 @@ If `react-native-nfc-manager` is incompatible with the Expo dev-client:
 ## References
 
 - [react-native-nfc-manager Expo wiki](https://github.com/revtel/react-native-nfc-manager/wiki/Expo-Go)
-- Product spec: `docs/ding-payments.md` — Proposed Payment Payload Structure
+- Product spec: `docs/vela-overview.md` — Proposed Payment Payload Structure
