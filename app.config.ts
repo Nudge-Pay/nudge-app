@@ -6,12 +6,12 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   slug: 'vela-payments',
   version: '1.0.0',
   orientation: 'portrait',
-  icon: './assets/images/icon.png',
+  icon: './assets/brand/vela-app-icon.png',
   scheme: 'dingpayments',
   userInterfaceStyle: 'automatic',
   ios: {
     ...config.ios,
-    icon: './assets/expo.icon',
+    icon: './assets/brand/vela-app-icon.png',
     entitlements: {
       ...(config.ios?.entitlements ?? {}),
       'com.apple.developer.nfc.readersession.formats': ['NDEF', 'TAG'],
@@ -26,10 +26,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   android: {
     ...config.android,
     adaptiveIcon: {
-      backgroundColor: '#E6F4FE',
-      foregroundImage: './assets/images/android-icon-foreground.png',
-      backgroundImage: './assets/images/android-icon-background.png',
-      monochromeImage: './assets/images/android-icon-monochrome.png',
+      backgroundColor: '#FFFFFF',
+      foregroundImage: './assets/brand/vela-app-icon.png',
     },
     permissions: ['android.permission.NFC'],
     predictiveBackGestureEnabled: false,
@@ -37,7 +35,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   web: {
     ...config.web,
     output: 'static',
-    favicon: './assets/images/favicon.png',
+    favicon: './assets/brand/vela-favicon.png',
   },
   plugins: [
     'expo-dev-client',
@@ -45,9 +43,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     [
       'expo-splash-screen',
       {
-        backgroundColor: '#208AEF',
+        backgroundColor: '#FFFFFF',
         android: {
-          image: './assets/images/splash-icon.png',
+          image: './assets/brand/vela-mark.png',
           imageWidth: 76,
         },
       },

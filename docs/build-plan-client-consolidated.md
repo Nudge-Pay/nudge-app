@@ -2659,8 +2659,8 @@ Implement UX hardening as cross-cutting but bounded updates: shared hooks/compon
 - `src/features/send/views/SendHomeView.tsx`
 - `src/i18n/index.ts`
 - `src/i18n/strings/es.json`
-- `assets/images/icon.png`
-- `assets/images/splash-icon.png`
+- `assets/brand/vela-app-icon.png`
+- `assets/brand/vela-mark.png`
 - `app.config.ts`
 - `src/features/history/components/TransactionRow.tsx`
 - `src/features/receive/views/ReceiveListeningView.tsx`

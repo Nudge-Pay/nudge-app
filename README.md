@@ -1,3 +1,5 @@
+<p align="center"><img src="assets/brand/vela-mark.png" alt="Vela" width="120" /></p>
+
 # Vela — Mobile Client MVP
 
 Peer-to-peer contactless (NFC) payments on Stellar with a self-custodial wallet and passkey authentication.

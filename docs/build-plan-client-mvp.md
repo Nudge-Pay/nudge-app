@@ -7346,8 +7346,8 @@ Out of scope:
 
 **Files**
 
-- Create: `assets/images/icon.png`
-- Create: `assets/images/splash-icon.png`
+- Create: `assets/brand/vela-app-icon.png`
+- Create: `assets/brand/vela-mark.png`
 - Modify: `app.config.ts`
 
 **Implementation guide**
