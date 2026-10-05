@@ -32,7 +32,7 @@ export function CreatePasskeyView() {
     setViewState('loading');
     setErrorMessage(null);
 
-    const displayName = 'Usuario Ding';
+    const displayName = 'Usuario Vela';
     const success = await registerPasskey(displayName);
 
     if (success) {

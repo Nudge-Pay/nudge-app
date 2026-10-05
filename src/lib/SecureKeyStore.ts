@@ -38,7 +38,7 @@ function buildOptions(
     requireAuthentication: requireAuth,
     authenticationPrompt:
       overrides?.authenticationPrompt ??
-      (requireAuth ? 'Autentícate para acceder a tu billetera Ding' : undefined),
+      (requireAuth ? 'Autentícate para acceder a tu billetera Vela' : undefined),
     keychainService: 'ding-payments',
   };
 }

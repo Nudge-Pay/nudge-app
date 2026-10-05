@@ -1,4 +1,4 @@
-# Ding Payments — Client MVP Build Plan (Consolidated)
+# Vela — Client MVP Build Plan (Consolidated)
 
 > **Executive backlog for `ding-payments/`** — 20 deliverables across 4 ETAs (stages).
 >
@@ -239,7 +239,7 @@ C01 has no direct API dependency, but it should stay compatible with server-side
 
 This deliverable creates the client architecture baseline by enforcing feature-slice folders and shared platform directories.
 It introduces TypeScript path aliases to eliminate fragile deep relative imports and simplify future refactors.
-It replaces generic Expo setup docs with Ding Payments-specific README onboarding and environment guidance.
+It replaces generic Expo setup docs with Vela-specific README onboarding and environment guidance.
 It formalizes runtime Stellar/app env variables in typed client code to support testnet/mainnet switching safely.
 
 **Product context**
@@ -265,7 +265,7 @@ The MVP plan uses CLI-003 through CLI-006 to define operational scaffolding befo
 |--------|-------|-----------------|
 | CLI-003 | Create features and shared folder structure | Establish vertical slice architecture |
 | CLI-004 | Configure path aliases @/ in TypeScript | Normalize imports across codebase |
-| CLI-005 | Document Ding Payments project README | Create reliable onboarding guide |
+| CLI-005 | Document Vela project README | Create reliable onboarding guide |
 | CLI-006 | Configure Stellar and app environment variables | Provide typed runtime network config |
 
 **Scope — In**
@@ -273,7 +273,7 @@ The MVP plan uses CLI-003 through CLI-006 to define operational scaffolding befo
 - Create scaffold directories for auth, wallet, receive, send, and history feature domains.
 - Create shared folders `src/lib`, `src/components/ui`, and `src/constants` with placeholders.
 - Configure tsconfig path aliases and Babel resolver where required for Expo.
-- Replace boilerplate README with Ding-specific setup, tooling, and dev-client requirements.
+- Replace boilerplate README with Vela-specific setup, tooling, and dev-client requirements.
 - Create `.env.example` and typed `src/lib/env.ts` with Stellar network and issuer variables.
 - Update `.gitignore` and docs to prevent accidental `.env` commits.
 
@@ -309,7 +309,7 @@ C02 establishes the FOLDER_LAYOUT architecture for Expo Router + TypeScript by s
 3. Configure `@/*` alias mapping in tsconfig paths.
 4. Add Babel module resolver support if Expo Router setup requires it.
 5. Compile with noEmit to validate alias resolution in editor and CLI.
-6. Replace generic README with Ding Payments context, prerequisites, and local startup flow.
+6. Replace generic README with Vela context, prerequisites, and local startup flow.
 7. Document NFC/passkey limitation in Expo Go and dev-build requirement.
 8. Create `.env.example` with all required `EXPO_PUBLIC_` variables.
 9. Implement typed env loader and validations in `src/lib/env.ts`.
@@ -358,7 +358,7 @@ C02 is the client-side counterpart to server setup and config tracks (S01-S03) a
 **Definition of done**
 
 - [ ] Folder scaffold and aliases are fully operational and lint-clean.
-- [ ] README is Ding-specific and tested via a fresh setup run.
+- [ ] README is Vela-specific and tested via a fresh setup run.
 - [ ] Typed env module exists and is consumed by at least one import path.
 - [ ] No secrets committed; `.env` hygiene is confirmed.
 - [ ] Downstream phases can build without revisiting foundational scaffolding.
@@ -519,7 +519,7 @@ C03 has no direct endpoint coupling but is a prerequisite for client features th
 **Executive summary**
 
 This deliverable creates the user-facing shell with reusable theme primitives, tabs, and global error handling.
-It migrates template routing to Ding-specific tabs for receive, send, history, and settings.
+It migrates template routing to Vela-specific tabs for receive, send, history, and settings.
 It introduces a top-level ErrorBoundary and toast conventions to avoid silent failures in MVP flows.
 It prepares a minimal analytics facade so event instrumentation can scale without refactoring core features.
 
@@ -822,7 +822,7 @@ C06 consolidates CLI-014 through CLI-026, covering service implementation (`Pass
 
 **User stories**
 
-- As a user, I want to register and use passkeys so that I can access Ding Payments without passwords.
+- As a user, I want to register and use passkeys so that I can access Vela without passwords.
 - As a user, I want sensitive actions to require re-authentication so that my funds stay protected.
 - As a developer, I want a typed auth state machine and guard logic so that screen routing is deterministic.
 - As an integrator, I want server-ready auth interfaces so that backend hookup can be done with minimal refactor.

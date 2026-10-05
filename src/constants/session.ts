@@ -16,7 +16,7 @@ export const SESSION = {
   BACKGROUND_GRACE_MS: 30 * 1000,
 
   RP_ID: 'dingpayments.app',
-  RP_NAME: 'Ding Payments',
+  RP_NAME: 'Vela',
 } as const;
 
 /** @deprecated Use SESSION.BACKGROUND_LOCK_MS */

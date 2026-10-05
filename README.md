@@ -1,6 +1,8 @@
-# Ding Payments — Mobile Client MVP
+# Vela — Mobile Client MVP
 
 Peer-to-peer contactless (NFC) payments on Stellar with a self-custodial wallet and passkey authentication.
+
+Vela mobile app from the [VelaPayments](https://github.com/VelaPayments) organization, built with Expo and React Native.
 
 ## Prerequisites
 

@@ -1,6 +1,6 @@
-# Auth Flow — Ding Payments (C06)
+# Auth Flow — Vela (C06)
 
-This document describes the complete passkey authentication lifecycle for the Ding Payments mobile client.
+This document describes the complete passkey authentication lifecycle for the Vela mobile client.
 
 ## File ownership
 

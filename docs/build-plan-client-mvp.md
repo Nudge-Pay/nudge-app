@@ -1,6 +1,6 @@
-# Ding Payments — Client MVP Build Plan
+# Vela — Client MVP Build Plan
 
-**Purpose:** Executable guide for agents and developers implementing the Ding Payments mobile client (Expo 56 + React Native). Each task (CLI-NNN) is an independent unit of work with verifiable acceptance criteria.
+**Purpose:** Executable guide for agents and developers implementing the Vela mobile client (Expo 56 + React Native). Each task (CLI-NNN) is an independent unit of work with verifiable acceptance criteria.
 
 **Audience:** Cursor agents, mobile developers, manual QA, and tech leads who prioritize the backlog.
 
@@ -65,7 +65,7 @@ flowchart LR
 
 ### Vision
 
-Ding Payments offers peer-to-peer contactless (NFC) payments on Stellar with self-custodial wallet and passkey authentication. The experience should feel like Apple Pay/Google Pay: instant, minimal, and without visible blockchain jargon.
+Vela offers peer-to-peer contactless (NFC) payments on Stellar with self-custodial wallet and passkey authentication. The experience should feel like Apple Pay/Google Pay: instant, minimal, and without visible blockchain jargon.
 
 ### MVP scope
 
@@ -494,7 +494,7 @@ Out of scope:
 
 ---
 
-### CLI-005 — Document Ding Payments project README
+### CLI-005 — Document Vela project README
 
 | Field | Value |
 |-------|-------|
@@ -510,7 +510,7 @@ Out of scope:
 As a new developer or agent, I want a project-specific README so that I can set up the environment without guessing.
 
 **Agent context**  
-Replace generic Expo README. Include: what is Ding Payments, requirements (Node 20+, Xcode/Android Studio), setup, environment variables, how to run dev client (not Expo Go for NFC), links to docs/ding-payments.md and this build plan.
+Replace generic Expo README. Include: what is Vela, requirements (Node 20+, Xcode/Android Studio), setup, environment variables, how to run dev client (not Expo Go for NFC), links to docs/ding-payments.md and this build plan.
 
 **Scope**
 
@@ -538,7 +538,7 @@ Out of scope:
 
 **Acceptance criteria**
 
-- [ ] README mentions Ding Payments, Stellar, NFC
+- [ ] README mentions Vela, Stellar, NFC
 - [ ] Clear dev build instructions
 - [ ] No broken references to reset-project.js if it doesn't exist
 
@@ -1156,7 +1156,7 @@ Out of scope:
 | Server contract | — |
 
 **User story**  
-As a new user, I want to understand what Ding Payments does so that I can decide to create my account with passkey.
+As a new user, I want to understand what Vela does so that I can decide to create my account with passkey.
 
 **Agent context**  
 First post-install screen. Copy in Spanish, without blockchain jargon. Explain: contactless payments, self-custodial, passkey. Main CTA 'Get Started'. Minimal Apple Pay onboarding type design.
@@ -7328,7 +7328,7 @@ Out of scope:
 | Server contract | — |
 
 **User story**  
-As a user, I want Ding Payments icon and splash so that professional product identity.
+As a user, I want Vela icon and splash so that professional product identity.
 
 **Agent context**  
 Replace default Expo assets. icon.png 1024, splash with centered logo on theme primary background. app.config.ts adaptive-icon Android.

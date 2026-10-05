@@ -24,10 +24,10 @@ export function WelcomeView() {
         {/* Hero */}
         <View style={styles.hero}>
           <View style={[styles.logoMark, { backgroundColor: theme.primary }]}>
-            <ThemedText style={styles.logoText}>D</ThemedText>
+            <ThemedText style={styles.logoText}>V</ThemedText>
           </View>
           <ThemedText type="title" style={styles.title}>
-            Ding Payments
+            Vela
           </ThemedText>
           <ThemedText themeColor="textSecondary" style={styles.subtitle}>
             Pagos seguros y rápidos con tecnología de llave de acceso.{'\n'}
@@ -63,7 +63,7 @@ export function WelcomeView() {
             accessibilityHint="Abre la pantalla para registrar tu llave de acceso biométrica"
           />
           <ThemedText type="small" themeColor="textSecondary" style={styles.disclaimer}>
-            Al continuar, aceptas los términos de uso de Ding Payments.
+            Al continuar, aceptas los términos de uso de Vela.
           </ThemedText>
         </View>
       </View>

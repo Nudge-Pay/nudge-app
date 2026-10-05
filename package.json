@@ -1,5 +1,5 @@
 {
-  "name": "ding-payments",
+  "name": "vela-payments",
   "main": "expo-router/entry",
   "version": "1.0.0",
   "dependencies": {

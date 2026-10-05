@@ -2,8 +2,8 @@ import { ExpoConfig, ConfigContext } from '@expo/config';
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
-  name: 'ding-payments',
-  slug: 'ding-payments',
+  name: 'Vela',
+  slug: 'vela-payments',
   version: '1.0.0',
   orientation: 'portrait',
   icon: './assets/images/icon.png',
@@ -19,7 +19,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     infoPlist: {
       ...(config.ios?.infoPlist ?? {}),
       NFCReaderUsageDescription:
-        'Ding Payments uses NFC to share and receive payment requests between devices.',
+        'Vela uses NFC to share and receive payment requests between devices.',
       NSFaceIDUsageDescription: 'Use Face ID to authenticate passkey operations safely.',
     },
   },
@@ -63,7 +63,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       'react-native-nfc-manager',
       {
         nfcPermission:
-          'Ding Payments uses NFC to share and receive payment requests between devices.',
+          'Vela uses NFC to share and receive payment requests between devices.',
         includeNdefEntitlement: true,
       },
     ],

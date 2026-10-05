@@ -6,7 +6,7 @@
 
 ## Context
 
-Ding Payments requires peer-to-peer NFC transport for payment-request payloads on iOS and Android. Expo Go does not expose native NFC APIs; a development build is mandatory.
+Vela requires peer-to-peer NFC transport for payment-request payloads on iOS and Android. Expo Go does not expose native NFC APIs; a development build is mandatory.
 
 ## Decision
 

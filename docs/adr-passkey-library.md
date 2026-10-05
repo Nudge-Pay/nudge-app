@@ -6,11 +6,11 @@
 
 ## Context
 
-The Ding Payments mobile MVP requires device-backed passkey registration and authentication on iOS and Android devices. Expo Go cannot support native passkey flows, so the solution must be validated in a development build or custom native runtime.
+The Vela mobile MVP requires device-backed passkey registration and authentication on iOS and Android devices. Expo Go cannot support native passkey flows, so the solution must be validated in a development build or custom native runtime.
 
 ## Decision
 
-We will adopt `react-native-passkey` as the primary passkey research library for the Ding Payments Expo app.
+We will adopt `react-native-passkey` as the primary passkey research library for the Vela Expo app.
 
 ### Why this library?
 

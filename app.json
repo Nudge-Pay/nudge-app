@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "ding-payments",
-    "slug": "ding-payments",
+    "name": "Vela",
+    "slug": "vela-payments",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",

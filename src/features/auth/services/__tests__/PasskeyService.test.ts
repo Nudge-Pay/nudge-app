@@ -218,7 +218,7 @@ describe('PasskeyService', () => {
     it('returns success with credential info on happy path', async () => {
       const result = await PasskeyService.register({
         rpId: 'dingpayments.app',
-        rpName: 'Ding Payments',
+        rpName: 'Vela',
         userId: 'user_abc',
         displayName: 'Test User',
         challenge: 'dGVzdENoYWxsZW5nZQ==',
@@ -234,7 +234,7 @@ describe('PasskeyService', () => {
     it('persists credential ID to secure store', async () => {
       await PasskeyService.register({
         rpId: 'dingpayments.app',
-        rpName: 'Ding Payments',
+        rpName: 'Vela',
         userId: 'user_abc',
         displayName: 'Test User',
         challenge: 'dGVzdA==',
@@ -250,7 +250,7 @@ describe('PasskeyService', () => {
       (Passkey.isSupported as jest.Mock).mockReturnValue(false);
       const result = await PasskeyService.register({
         rpId: 'dingpayments.app',
-        rpName: 'Ding Payments',
+        rpName: 'Vela',
         userId: 'user_abc',
         displayName: 'Test User',
         challenge: 'dGVzdA==',
@@ -270,7 +270,7 @@ describe('PasskeyService', () => {
 
       const result = await PasskeyService.register({
         rpId: 'dingpayments.app',
-        rpName: 'Ding Payments',
+        rpName: 'Vela',
         userId: 'user_abc',
         displayName: 'Test User',
         challenge: 'dGVzdA==',
