@@ -55,6 +55,15 @@ describe('TrustlineService', () => {
     expect(result).toEqual({ hasLine: false, sufficientReserve: true });
   });
 
+  it('returns false when the account has no balance entries', async () => {
+    mockLoadAccount.mockResolvedValue({ balances: [] });
+
+    const service = new TrustlineService();
+    const result = await service.checkUsdcTrustline(PUBLIC_KEY);
+
+    expect(result.hasLine).toBe(false);
+  });
+
   it('returns hasLine: false when the account cannot be found', async () => {
     mockLoadAccount.mockRejectedValue(new Error('Not Found'));
 
