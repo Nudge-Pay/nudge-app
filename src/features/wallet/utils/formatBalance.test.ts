@@ -28,4 +28,8 @@ describe('formatBalance', () => {
   it('returns 0 for NaN input', () => {
     expect(formatBalance(Number.NaN)).toBe('0');
   });
+
+  it('returns 0 for an infinite input', () => {
+    expect(formatBalance(Number.POSITIVE_INFINITY)).toBe('0');
+  });
 });
