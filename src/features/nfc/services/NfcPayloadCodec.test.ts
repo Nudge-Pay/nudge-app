@@ -24,6 +24,48 @@ describe('NfcPayloadCodec', () => {
     expect(decoded).toEqual(sampleRequest);
   });
 
+  it('uses the shared server payment-request.v1 wire format', () => {
+    const fixture = require('../fixtures/payment-request.v1.json');
+    const bytes = new TextEncoder().encode(JSON.stringify(fixture));
+    const fixtureRequest = createPaymentRequest({
+      recipient: fixture.recipient,
+      asset: fixture.asset,
+      amount: fixture.amount,
+      timestamp: Date.parse(fixture.timestamp) / 1000,
+      expiresAt: Date.parse(fixture.expiresAt) / 1000,
+    });
+    expect(decodePaymentRequest(bytes)).toEqual(fixtureRequest);
+    expect(JSON.parse(new TextDecoder().decode(encodePaymentRequest(fixtureRequest)))).toEqual(
+      fixture
+    );
+  });
+
+  it('rejects invalid ISO timestamps and expired v1 requests', () => {
+    const invalid = {
+      type: 'payment-request',
+      version: 1,
+      recipient: VALID_RECIPIENT,
+      asset: 'USDC',
+      amount: '10',
+      timestamp: 'not-a-date',
+      expiresAt: '2025-02-01T00:00:00.000Z',
+    };
+    expect(() => decodePaymentRequest(new TextEncoder().encode(JSON.stringify(invalid)))).toThrow(
+      NfcError
+    );
+    const expired = {
+      ...invalid,
+      timestamp: '2025-01-01T00:00:00.000Z',
+      expiresAt: '2025-01-01T00:01:00.000Z',
+    };
+    expect(() =>
+      decodePaymentRequest(new TextEncoder().encode(JSON.stringify(expired)), {
+        rejectExpired: true,
+        nowMs: Date.parse('2025-01-01T00:01:00.000Z'),
+      })
+    ).toThrow(/expired/i);
+  });
+
   it('rejects malformed JSON payloads', () => {
     const bytes = new TextEncoder().encode('{not-json');
 

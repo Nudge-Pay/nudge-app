@@ -39,6 +39,17 @@ describe('paymentRequest schema', () => {
     ).toThrow();
   });
 
+  it('preserves supported optional contract fields and rejects unknown ones', () => {
+    const optional = {
+      ...basePayload,
+      memo: 'Coffee',
+      requestId: 'req_123',
+      metadata: { table: 7 },
+    };
+    expect(parsePaymentRequest(optional)).toEqual(optional);
+    expect(() => parsePaymentRequest({ ...basePayload, surprise: true })).toThrow();
+  });
+
   it('validateExpiry returns false for past requests', () => {
     const request = createPaymentRequest({
       recipient: VALID_RECIPIENT,

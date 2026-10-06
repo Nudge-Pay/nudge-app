@@ -9,9 +9,16 @@ import { NfcError } from '@/features/nfc/services/NfcService.types';
 
 const textEncoder = new TextEncoder();
 const textDecoder = new TextDecoder();
+const ISO_UTC_PATTERN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?Z$/;
 
 export function encodePaymentRequest(request: PaymentRequest): Uint8Array {
-  const json = JSON.stringify(request);
+  const json = JSON.stringify({
+    ...request,
+    type: 'payment-request',
+    version: 1,
+    timestamp: new Date(request.timestamp * 1000).toISOString(),
+    expiresAt: new Date(request.expiresAt * 1000).toISOString(),
+  });
   const bytes = textEncoder.encode(json);
 
   assertMaxPayloadSize(bytes);
@@ -32,6 +39,7 @@ export function decodePaymentRequest(
   }
 
   try {
+    parsed = fromPaymentRequestV1(parsed);
     if (options?.rejectExpired) {
       return parsePaymentRequestFresh(parsed, options.nowMs);
     }
@@ -45,6 +53,29 @@ export function decodePaymentRequest(
 
     throw error;
   }
+}
+
+function fromPaymentRequestV1(input: unknown): unknown {
+  if (!input || typeof input !== 'object' || Array.isArray(input)) return input;
+  const payload = input as Record<string, unknown>;
+  if (payload.type !== 'payment-request' || payload.version !== 1) return input;
+  if (
+    typeof payload.timestamp !== 'string' ||
+    typeof payload.expiresAt !== 'string' ||
+    !ISO_UTC_PATTERN.test(payload.timestamp) ||
+    !ISO_UTC_PATTERN.test(payload.expiresAt)
+  )
+    return input;
+  const timestampMs = Date.parse(payload.timestamp);
+  const expiresAtMs = Date.parse(payload.expiresAt);
+  if (!Number.isFinite(timestampMs) || !Number.isFinite(expiresAtMs)) return input;
+  const { version: _version, ...request } = payload;
+  return {
+    ...request,
+    type: 'payment_request',
+    timestamp: Math.floor(timestampMs / 1000),
+    expiresAt: Math.floor(expiresAtMs / 1000),
+  };
 }
 
 export function assertMaxPayloadSize(bytes: Uint8Array): void {
