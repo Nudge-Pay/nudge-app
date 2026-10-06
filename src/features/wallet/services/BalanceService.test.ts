@@ -88,4 +88,10 @@ describe('fetchBalances', () => {
     expect(server.loadAccount).toHaveBeenCalledWith('GPUBLICKEY');
     expect(result.xlm).toBe('5.0000000');
   });
+
+  it('propagates a Horizon account-loading error', async () => {
+    server.loadAccount.mockRejectedValueOnce(new Error('Horizon unavailable'));
+
+    await expect(fetchBalances('GPUBLICKEY')).rejects.toThrow('Horizon unavailable');
+  });
 });
