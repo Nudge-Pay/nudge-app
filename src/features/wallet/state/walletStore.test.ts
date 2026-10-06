@@ -30,6 +30,12 @@ describe('walletStore', () => {
     expect(useWalletStore.getState().balances).toEqual(balances);
   });
 
+  it('stores an empty balance object', () => {
+    useWalletStore.getState().setBalances({} as never);
+
+    expect(useWalletStore.getState().balances).toEqual({});
+  });
+
   it('setError stores and clears the error message', () => {
     useWalletStore.getState().setError('boom');
     expect(useWalletStore.getState().error).toBe('boom');
