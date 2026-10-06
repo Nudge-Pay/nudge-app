@@ -13,6 +13,10 @@ describe('formatBalance', () => {
     expect(formatBalance('10.123456', 2)).toBe('10.12');
   });
 
+  it('keeps the requested precision when significant digits remain', () => {
+    expect(formatBalance('10.123456', 5)).toBe('10.12346');
+  });
+
   it('accepts numeric input', () => {
     expect(formatBalance(42)).toBe('42');
   });
