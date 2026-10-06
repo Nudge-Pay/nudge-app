@@ -16,6 +16,10 @@ describe('receiveAmountSchema', () => {
     expect(result.success).toBe(false);
   });
 
+  it('rejects a USDC amount with a trailing decimal point', () => {
+    expect(receiveAmountSchema.safeParse({ amount: '1.', asset: 'USDC' }).success).toBe(false);
+  });
+
   it('accepts XLM amounts with up to 7 decimal places (not capped at 2)', () => {
     const result = receiveAmountSchema.safeParse({ amount: '1.1234567', asset: 'XLM' });
     expect(result.success).toBe(true);
