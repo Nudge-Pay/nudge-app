@@ -55,10 +55,10 @@ global.Buffer = Buffer;
 
 describe('authErrors', () => {
   describe('createAuthError', () => {
-    it('creates an error with the correct code and Spanish message', () => {
+    it('creates an error with the correct code and English message', () => {
       const err = createAuthError(AuthErrorCode.USER_CANCELLED);
       expect(err.code).toBe('USER_CANCELLED');
-      expect(err.message).toMatch(/cancelad/i);
+      expect(err.message).toMatch(/cancelled/i);
     });
 
     it('attaches cause when provided', () => {
@@ -279,8 +279,8 @@ describe('PasskeyService', () => {
       expect(result.success).toBe(false);
       if (!result.success) {
         expect(result.error.code).toBe(AuthErrorCode.USER_CANCELLED);
-        // Message must be in Spanish
-        expect(result.error.message).toMatch(/cancelad/i);
+        // Message must be in English
+        expect(result.error.message).toMatch(/cancelled/i);
       }
     });
   });

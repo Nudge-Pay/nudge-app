@@ -186,16 +186,16 @@ await withReAuth(async () => {
 
 ## Error handling
 
-All native passkey errors are mapped through `mapNativePasskeyError()` in `authErrors.ts`. Every `AuthErrorCode` has a user-safe Spanish message. Raw native error objects are attached as `cause` for internal diagnostics only — they are never surfaced in toasts or analytics.
+All native passkey errors are mapped through `mapNativePasskeyError()` in `authErrors.ts`. Every `AuthErrorCode` has a user-safe English message. Raw native error objects are attached as `cause` for internal diagnostics only — they are never surfaced in toasts or analytics.
 
 ```
-UserCancelled      → USER_CANCELLED  → "Autenticación cancelada…"
-NotSupported       → NOT_SUPPORTED   → "Este dispositivo no es compatible…"
-NoCredentials      → NO_CREDENTIAL   → "No se encontró ninguna llave de acceso…"
-CredentialAlreadyExists → CREDENTIAL_EXISTS → "Ya existe una llave de acceso…"
-Timeout            → TIMEOUT         → "La solicitud tardó demasiado…"
-Interrupted        → INTERRUPTED     → "La autenticación fue interrumpida…"
-(catch-all)        → UNKNOWN         → "Ocurrió un error inesperado…"
+UserCancelled      → USER_CANCELLED  → "Verification cancelled…"
+NotSupported       → NOT_SUPPORTED   → "Passkeys are unavailable on this device…"
+NoCredentials      → NO_CREDENTIAL   → "No passkey was found…"
+CredentialAlreadyExists → CREDENTIAL_EXISTS → "A passkey is already registered…"
+Timeout            → TIMEOUT         → "Verification timed out…"
+Interrupted        → INTERRUPTED     → "Verification was interrupted…"
+(catch-all)        → UNKNOWN         → "Something went wrong…"
 ```
 
 ---

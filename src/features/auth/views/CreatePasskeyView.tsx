@@ -1,17 +1,11 @@
-/**
- * CLI-016 — CreatePasskeyView
- *
- * Passkey registration screen shown during onboarding.
- * Handles loading, success, and cancellation states cleanly.
- * No seed phrases or private keys involved.
- */
-
-import React, { useCallback, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+/** Passkey registration screen shown during onboarding. */
+import React, { useCallback, useEffect, useState } from 'react';
+import { Image, Platform, StyleSheet, View } from 'react-native';
 import { useRouter } from 'expo-router';
 
 import { Screen } from '@/components/ui/Screen';
 import { Button } from '@/components/ui/Button';
+import { Card } from '@/components/ui/Card';
 import { ThemedText } from '@/components/themed-text';
 import { useTheme } from '@/hooks/use-theme';
 import { useAuth } from '../hooks/useAuth';
@@ -24,184 +18,162 @@ export function CreatePasskeyView() {
   const theme = useTheme();
   const { registerPasskey, state } = useAuth();
   const [viewState, setViewState] = useState<ViewState>('idle');
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
   const supportInfo = PasskeyService.getSupportInfo();
 
+  useEffect(() => {
+    if (viewState !== 'success') return;
+    const timeout = setTimeout(() => router.replace('/(onboarding)/wallet-setup'), 1200);
+    return () => clearTimeout(timeout);
+  }, [viewState, router]);
+
   const handleCreatePasskey = useCallback(async () => {
+    if (!supportInfo.isSupported || viewState === 'loading') return;
     setViewState('loading');
-    setErrorMessage(null);
-
-    const displayName = 'Usuario Vela';
-    const success = await registerPasskey(displayName);
-
-    if (success) {
-      setViewState('success');
-      setTimeout(() => {
-        router.replace('/(onboarding)/wallet-setup');
-      }, 1200);
-    } else {
-      setErrorMessage(
-        state.lastError ?? 'No se pudo crear la llave de acceso. Inténtalo de nuevo.'
-      );
+    try {
+      const success = await registerPasskey('Vela user');
+      setViewState(success ? 'success' : 'error');
+    } catch {
       setViewState('error');
     }
-  }, [registerPasskey, router, state.lastError]);
-
-  const handleRetry = useCallback(() => {
-    setViewState('idle');
-    setErrorMessage(null);
-  }, []);
+  }, [registerPasskey, supportInfo.isSupported, viewState]);
 
   return (
     <Screen scrollable>
       <View style={styles.container}>
-        {/* Header */}
+        <View style={styles.brand}>
+          <Image
+            source={require('../../../../assets/brand/vela-mark.png')}
+            style={styles.mark}
+            accessible={false}
+          />
+          <ThemedText type="smallBold">Vela</ThemedText>
+        </View>
         <View style={styles.header}>
-          <ThemedText type="subtitle">Crear llave de acceso</ThemedText>
+          <ThemedText type="smallBold" style={{ color: theme.accent }}>
+            SECURE WALLET SETUP
+          </ThemedText>
+          <ThemedText type="title">Create your passkey.</ThemedText>
           <ThemedText themeColor="textSecondary" style={styles.description}>
-            Tu llave de acceso se almacena de forma segura en este dispositivo. Se usará para
-            proteger tu billetera y confirmar pagos.
+            Use a passkey to access your Vela wallet and authorize payments without a password.
           </ThemedText>
         </View>
 
-        {/* Info rows */}
-        <View style={[styles.infoCard, { backgroundColor: theme.backgroundElement }]}>
-          <InfoRow icon="🔒" text="Cifrada en el chip de seguridad de tu dispositivo" />
-          <InfoRow icon="👆" text="Autenticada con Face ID o huella digital" />
-          <InfoRow icon="🚫" text="Sin contraseñas que recordar o perder" />
-          <InfoRow icon="📵" text="No se conecta a servidores externos durante el registro" />
-        </View>
+        <Card style={styles.infoCard}>
+          <InfoRow
+            number="01"
+            title="Protected by your device"
+            text="Your device's passkey provider manages your credential securely."
+          />
+          <InfoRow
+            number="02"
+            title="Confirm it's you"
+            text="Use Face ID, your fingerprint, or your device's screen lock when prompted."
+          />
+          <InfoRow
+            number="03"
+            title="One less password"
+            text="Sign in without creating or remembering a password."
+          />
+        </Card>
 
-        {/* Unsupported device warning */}
         {!supportInfo.isSupported && (
-          <View style={[styles.warningCard, { backgroundColor: theme.error + '20' }]}>
-            <ThemedText type="small" style={{ color: theme.error }}>
-              Las llaves de acceso no están disponibles en este entorno. Usa un dispositivo físico
-              con una compilación de desarrollo para completar el registro.
-            </ThemedText>
-          </View>
-        )}
-
-        {/* Success state */}
-        {viewState === 'success' && (
-          <View style={[styles.successCard, { backgroundColor: theme.success + '20' }]}>
-            <ThemedText type="smallBold" style={{ color: theme.success }}>
-              ✓ Llave de acceso creada exitosamente
+          <Card style={styles.notice}>
+            <ThemedText type="smallBold">
+              {Platform.OS === 'web' ? 'Continue in the mobile app' : 'Passkeys unavailable'}
             </ThemedText>
             <ThemedText type="small" themeColor="textSecondary">
-              Redirigiendo a tu billetera…
+              {Platform.OS === 'web'
+                ? 'Passkey setup is not available in this web preview. Use the Vela mobile app on a supported device to continue.'
+                : 'Passkey setup is not available on this device. Continue on a supported device with the Vela app installed.'}
             </ThemedText>
-          </View>
+          </Card>
         )}
 
-        {/* Error state */}
-        {viewState === 'error' && errorMessage && (
-          <View style={[styles.errorCard, { backgroundColor: theme.error + '20' }]}>
+        {viewState === 'success' && (
+          <Card style={styles.notice} accessibilityLiveRegion="polite">
+            <ThemedText type="smallBold" style={{ color: theme.success }}>
+              Passkey created
+            </ThemedText>
+            <ThemedText type="small" themeColor="textSecondary">
+              Continuing to wallet setup…
+            </ThemedText>
+          </Card>
+        )}
+
+        {viewState === 'error' && (
+          <Card style={styles.notice} accessibilityRole="alert">
             <ThemedText type="small" style={{ color: theme.error }}>
-              {errorMessage}
+              {state.lastError ?? 'Unable to create your passkey. Please try again.'}
             </ThemedText>
-          </View>
+          </Card>
         )}
 
-        {/* Actions */}
-        <View style={styles.actions}>
-          {viewState !== 'success' && (
-            <>
-              <Button
-                label={
-                  viewState === 'loading'
-                    ? 'Registrando llave de acceso…'
-                    : viewState === 'error'
-                      ? 'Intentar de nuevo'
-                      : 'Crear llave de acceso'
-                }
-                onPress={viewState === 'error' ? handleRetry : handleCreatePasskey}
-                loading={viewState === 'loading'}
-                disabled={!supportInfo.isSupported || viewState === 'loading'}
-                accessibilityLabel="Crear llave de acceso con biometría"
-                accessibilityHint="Activará Face ID o huella digital para registrar tu llave de acceso"
-              />
-              <Button
-                label="Volver"
-                variant="secondary"
-                onPress={() => router.back()}
-                disabled={viewState === 'loading'}
-                accessibilityLabel="Volver a la pantalla anterior"
-              />
-            </>
-          )}
-        </View>
+        {viewState !== 'success' && (
+          <View style={styles.actions}>
+            <Button
+              label={
+                viewState === 'loading'
+                  ? 'Creating passkey…'
+                  : viewState === 'error'
+                    ? 'Try again'
+                    : 'Create passkey'
+              }
+              onPress={handleCreatePasskey}
+              loading={viewState === 'loading'}
+              disabled={!supportInfo.isSupported || viewState === 'loading'}
+              accessibilityLabel="Create your Vela passkey"
+              accessibilityHint={
+                supportInfo.isSupported
+                  ? 'Opens your device verification prompt'
+                  : 'Passkey setup is unavailable in this environment'
+              }
+            />
+            <Button
+              label="Back to welcome"
+              variant="secondary"
+              onPress={() => router.replace('/(onboarding)/welcome')}
+              disabled={viewState === 'loading'}
+            />
+          </View>
+        )}
       </View>
     </Screen>
   );
 }
 
-// ─── Sub-component ─────────────────────────────────────────────────────────────
-
-function InfoRow({ icon, text }: { icon: string; text: string }) {
+function InfoRow({ number, title, text }: { number: string; title: string; text: string }) {
+  const theme = useTheme();
   return (
-    <View style={styles.infoRow} accessibilityRole="text">
-      <ThemedText style={styles.infoIcon} accessible={false}>
-        {icon}
+    <View style={styles.infoRow}>
+      <ThemedText type="smallBold" style={{ color: theme.accent }} accessible={false}>
+        {number}
       </ThemedText>
-      <ThemedText type="small" themeColor="textSecondary" style={styles.infoText}>
-        {text}
-      </ThemedText>
+      <View style={styles.infoText}>
+        <ThemedText type="smallBold">{title}</ThemedText>
+        <ThemedText type="small" themeColor="textSecondary">
+          {text}
+        </ThemedText>
+      </View>
     </View>
   );
 }
 
-// ─── Styles ────────────────────────────────────────────────────────────────────
-
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    width: '100%',
+    maxWidth: 560,
+    alignSelf: 'center',
     gap: 24,
-    paddingTop: 16,
+    paddingTop: 24,
     paddingBottom: 32,
   },
-  header: {
-    gap: 12,
-  },
-  description: {
-    lineHeight: 24,
-  },
-  infoCard: {
-    borderRadius: 16,
-    padding: 16,
-    gap: 12,
-  },
-  infoRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: 12,
-  },
-  infoIcon: {
-    fontSize: 18,
-    lineHeight: 22,
-    width: 24,
-    textAlign: 'center',
-  },
-  infoText: {
-    flex: 1,
-    lineHeight: 20,
-  },
-  warningCard: {
-    borderRadius: 12,
-    padding: 14,
-  },
-  successCard: {
-    borderRadius: 12,
-    padding: 14,
-    gap: 4,
-  },
-  errorCard: {
-    borderRadius: 12,
-    padding: 14,
-  },
-  actions: {
-    gap: 12,
-    marginTop: 8,
-  },
+  brand: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  mark: { width: 32, height: 32, resizeMode: 'contain' },
+  header: { gap: 12 },
+  description: { lineHeight: 26 },
+  infoCard: { gap: 24 },
+  infoRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 16 },
+  infoText: { flex: 1, gap: 4 },
+  notice: { gap: 8 },
+  actions: { gap: 12 },
 });

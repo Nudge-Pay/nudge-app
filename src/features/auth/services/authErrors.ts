@@ -2,11 +2,11 @@
  * CLI-021 — Auth error mapping
  *
  * Maps native passkey error codes to user-safe AuthErrorCode values
- * with Spanish-language messages. Never expose raw stack traces or
+ * with English-language messages. Never expose raw stack traces or
  * sensitive platform internals to the UI layer.
  *
  * Policy:
- * - All user-facing message strings are in Spanish.
+ * - All user-facing message strings are in English.
  * - No private keys, seeds, or raw error details leak through.
  * - Errors are sanitized before toast or analytics emission.
  */
@@ -42,27 +42,25 @@ export type AuthErrorCodeValue = (typeof AuthErrorCode)[keyof typeof AuthErrorCo
 
 export interface AuthError {
   code: AuthErrorCodeValue;
-  /** User-safe Spanish message — safe to show in toasts/UI */
+  /** User-safe English message — safe to show in toasts/UI */
   message: string;
   /** Original error for internal logging only — never expose to UI */
   cause?: unknown;
 }
 
-// ─── User-safe Spanish messages ──────────────────────────────────────────────
+// ─── User-safe English messages ──────────────────────────────────────────────
 
 const AUTH_ERROR_MESSAGES: Record<AuthErrorCodeValue, string> = {
-  USER_CANCELLED: 'Autenticación cancelada. Inténtalo de nuevo cuando estés listo.',
-  NOT_SUPPORTED:
-    'Este dispositivo no es compatible con llaves de acceso. Actualiza tu sistema operativo.',
-  LOCKOUT: 'Demasiados intentos fallidos. Espera un momento antes de intentarlo de nuevo.',
-  NO_CREDENTIAL: 'No se encontró ninguna llave de acceso en este dispositivo. Regístrala primero.',
-  CREDENTIAL_EXISTS: 'Ya existe una llave de acceso registrada para esta cuenta.',
-  INVALID_REQUEST:
-    'La solicitud de autenticación no es válida. Contacta al soporte si el error persiste.',
-  TIMEOUT: 'La solicitud tardó demasiado. Verifica tu conexión e inténtalo de nuevo.',
-  INTERRUPTED: 'La autenticación fue interrumpida. Por favor inténtalo de nuevo.',
-  STORE_ERROR: 'No se pudo acceder al almacenamiento seguro. Verifica los permisos biométricos.',
-  UNKNOWN: 'Ocurrió un error inesperado. Por favor inténtalo de nuevo.',
+  USER_CANCELLED: 'Verification cancelled. Try again when you are ready.',
+  NOT_SUPPORTED: 'Passkeys are unavailable on this device. Use the Vela app on a supported device.',
+  LOCKOUT: 'Too many unsuccessful attempts. Wait a moment before trying again.',
+  NO_CREDENTIAL: 'No passkey was found. Create a passkey first.',
+  CREDENTIAL_EXISTS: 'A passkey is already registered for this account.',
+  INVALID_REQUEST: 'Unable to start verification. Contact support if the problem continues.',
+  TIMEOUT: 'Verification timed out. Check your connection and try again.',
+  INTERRUPTED: 'Verification was interrupted. Please try again.',
+  STORE_ERROR: 'Unable to access secure storage. Check your device verification permissions.',
+  UNKNOWN: 'Something went wrong. Please try again.',
 };
 
 // ─── Native error-code → AuthErrorCode mapping ──────────────────────────────
@@ -93,7 +91,7 @@ const NATIVE_ERROR_MAP: Record<string, AuthErrorCodeValue> = {
 // ─── Factory helpers ─────────────────────────────────────────────────────────
 
 /**
- * Creates a typed AuthError with user-safe Spanish message.
+ * Creates a typed AuthError with user-safe English message.
  */
 export function createAuthError(code: AuthErrorCodeValue, cause?: unknown): AuthError {
   return {
