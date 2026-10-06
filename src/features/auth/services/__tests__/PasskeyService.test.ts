@@ -246,6 +246,24 @@ describe('PasskeyService', () => {
       );
     });
 
+    it('returns a safe error when secure storage fails during registration', async () => {
+      (SecureKeyStore.set as jest.Mock).mockRejectedValueOnce(new Error('secure store locked'));
+
+      const result = await PasskeyService.register({
+        rpId: 'dingpayments.app',
+        rpName: 'Vela',
+        userId: 'user_abc',
+        displayName: 'Test User',
+        challenge: 'dGVzdA==',
+      });
+
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error.code).toBe(AuthErrorCode.UNKNOWN);
+        expect(result.error.message).not.toContain('secure store locked');
+      }
+    });
+
     it('returns NOT_SUPPORTED when passkeys unavailable', async () => {
       (Passkey.isSupported as jest.Mock).mockReturnValue(false);
       const result = await PasskeyService.register({
