@@ -32,7 +32,7 @@ export const useWalletStore = create<WalletState>((set) => ({
   setStatus: (status) => set({ status }),
   setPublicKey: (publicKey) => set({ publicKey }),
   setBalances: (balances) => set({ balances }),
-  setError: (error) => set({ error }),
+  setError: (error) => set({ error: error || null }),
   setHydrated: () => set({ hasHydrated: true }),
   reset: () => set({ ...INITIAL_STATE }),
 }));

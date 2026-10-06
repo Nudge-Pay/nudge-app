@@ -38,6 +38,13 @@ describe('walletStore', () => {
     expect(useWalletStore.getState().error).toBeNull();
   });
 
+  it('sets an empty error value to clear the current error', () => {
+    useWalletStore.getState().setError('previous error');
+    useWalletStore.getState().setError('');
+
+    expect(useWalletStore.getState().error).toBeNull();
+  });
+
   it('setHydrated flips hasHydrated to true', () => {
     useWalletStore.getState().setHydrated();
     expect(useWalletStore.getState().hasHydrated).toBe(true);
