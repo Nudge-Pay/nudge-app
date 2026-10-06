@@ -24,4 +24,8 @@ describe('formatBalance', () => {
   it('returns 0 for an empty string', () => {
     expect(formatBalance('')).toBe('0');
   });
+
+  it('returns 0 for an infinite input', () => {
+    expect(formatBalance(Number.POSITIVE_INFINITY)).toBe('0');
+  });
 });
