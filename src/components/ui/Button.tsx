@@ -8,7 +8,7 @@ import {
   type ViewStyle,
 } from 'react-native';
 
-import { Spacing } from '@/constants/theme';
+import { Fonts, Radius, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'danger';
@@ -42,7 +42,12 @@ export const Button = ({
         ? theme.error
         : theme.backgroundElement;
 
-  const labelColor = variant === 'secondary' ? theme.text : '#FFFFFF';
+  const labelColor =
+    variant === 'secondary'
+      ? theme.text
+      : variant === 'danger'
+        ? theme.background
+        : theme.onPrimary;
 
   return (
     <Pressable
@@ -52,7 +57,11 @@ export const Button = ({
       disabled={isDisabled}
       style={({ pressed }) => [
         styles.base,
-        { backgroundColor, opacity: isDisabled ? 0.5 : pressed ? 0.85 : 1 },
+        {
+          backgroundColor:
+            pressed && variant === 'primary' ? theme.primaryPressed : backgroundColor,
+          opacity: isDisabled ? 0.5 : pressed ? 0.88 : 1,
+        },
         style,
       ]}
     >
@@ -67,15 +76,16 @@ export const Button = ({
 
 const styles = StyleSheet.create({
   base: {
-    minHeight: MIN_TOUCH_TARGET,
+    minHeight: 52,
     minWidth: MIN_TOUCH_TARGET,
     paddingHorizontal: Spacing.four,
     paddingVertical: Spacing.two,
-    borderRadius: Spacing.three,
+    borderRadius: Radius.input,
     alignItems: 'center',
     justifyContent: 'center',
   },
   label: {
+    fontFamily: Fonts.sans,
     fontSize: 16,
     fontWeight: '600',
     lineHeight: 20,

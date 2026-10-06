@@ -1,6 +1,8 @@
 import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
 import { useColorScheme } from 'react-native';
 
+import { useTheme } from '@/hooks/use-theme';
+
 import { AnimatedSplashOverlay } from '@/components/animated-icon';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { AuthProvider } from '@/features/auth/hooks/useAuth';
@@ -9,9 +11,23 @@ import { ReceivePaymentProvider } from '@/features/receive/hooks/useReceivePayme
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+  const theme = useTheme();
+  const baseTheme = colorScheme === 'dark' ? DarkTheme : DefaultTheme;
+  const navigationTheme = {
+    ...baseTheme,
+    colors: {
+      ...baseTheme.colors,
+      primary: theme.accent,
+      background: theme.background,
+      card: theme.surface,
+      text: theme.text,
+      border: theme.border,
+      notification: theme.error,
+    },
+  };
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <ThemeProvider value={navigationTheme}>
       <ErrorBoundary>
         <AuthProvider>
           <SessionPolicyMount />

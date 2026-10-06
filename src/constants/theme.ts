@@ -1,36 +1,44 @@
-/**
- * Below are the colors that are used in the app. The colors are defined in the light and dark mode.
- * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
- */
-
 import '@/global.css';
 
 import { Platform } from 'react-native';
 
+/** Shared Vela palette. Keep interactive labels readable in both color schemes. */
 export const Colors = {
   light: {
-    text: '#000000',
-    background: '#ffffff',
-    backgroundElement: '#F0F0F3',
-    backgroundSelected: '#E0E1E6',
-    textSecondary: '#60646C',
-    primary: '#208AEF',
-    success: '#16A34A',
-    error: '#DC2626',
-    surface: '#F8F9FA',
+    text: '#17243B',
+    background: '#F7F8FA',
+    backgroundElement: '#EDF1F6',
+    backgroundSelected: '#DBE2EC',
+    textSecondary: '#57657A',
+    primary: '#245BCE',
+    primaryPressed: '#1C49AA',
+    primarySoft: '#EAF0FD',
+    accent: '#245BCE',
+    onPrimary: '#FFFFFF',
+    border: '#DBE2EC',
+    success: '#18794E',
+    error: '#B42336',
+    surface: '#FFFFFF',
   },
   dark: {
-    text: '#ffffff',
-    background: '#000000',
-    backgroundElement: '#212225',
-    backgroundSelected: '#2E3135',
-    textSecondary: '#B0B4BA',
-    primary: '#4DA3FF',
-    success: '#22C55E',
-    error: '#F87171',
-    surface: '#18191B',
+    text: '#EEF2FA',
+    background: '#0E1625',
+    backgroundElement: '#202D42',
+    backgroundSelected: '#34445C',
+    textSecondary: '#B0BDD0',
+    primary: '#245BCE',
+    primaryPressed: '#1C49AA',
+    primarySoft: '#1B2D4E',
+    accent: '#93BAFF',
+    onPrimary: '#FFFFFF',
+    border: '#34445C',
+    success: '#67D9A2',
+    error: '#FFA6B1',
+    surface: '#172238',
   },
 } as const;
+
+export const Radius = { input: 12, card: 20, pill: 999 } as const;
 
 export type ThemeColor = keyof typeof Colors.light & keyof typeof Colors.dark;
 

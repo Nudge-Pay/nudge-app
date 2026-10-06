@@ -60,8 +60,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     [
       'react-native-nfc-manager',
       {
-        nfcPermission:
-          'Vela uses NFC to share and receive payment requests between devices.',
+        nfcPermission: 'Vela uses NFC to share and receive payment requests between devices.',
         includeNdefEntitlement: true,
       },
     ],

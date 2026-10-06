@@ -1,6 +1,6 @@
 import { StyleSheet, View, type StyleProp, type ViewProps, type ViewStyle } from 'react-native';
 
-import { Spacing } from '@/constants/theme';
+import { Radius, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 
 export type CardProps = ViewProps & {
@@ -16,7 +16,7 @@ export const Card = ({ children, style, ...viewProps }: CardProps) => {
         styles.card,
         {
           backgroundColor: theme.surface,
-          borderColor: theme.backgroundSelected,
+          borderColor: theme.border,
         },
         style,
       ]}
@@ -30,7 +30,7 @@ export const Card = ({ children, style, ...viewProps }: CardProps) => {
 const styles = StyleSheet.create({
   card: {
     padding: Spacing.four,
-    borderRadius: Spacing.three,
+    borderRadius: Radius.card,
     borderWidth: 1,
     borderCurve: 'continuous',
   },

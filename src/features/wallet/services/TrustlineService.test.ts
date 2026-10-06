@@ -43,7 +43,7 @@ jest.mock('@stellar/stellar-sdk', () => {
     Asset: MockAsset,
     BASE_FEE: '100',
     Keypair: {
-      fromSecret: jest.fn().mockReturnValue({ publicKey: () => 'GFAKEPUBLICKEY' }),
+      fromSecret: jest.fn().mockReturnValue({ publicKey: () => 'GPUB' }),
     },
     Operation: {
       changeTrust: jest.fn().mockReturnValue({}),

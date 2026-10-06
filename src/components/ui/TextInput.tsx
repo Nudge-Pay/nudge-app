@@ -4,12 +4,10 @@ import {
   type TextInputProps as RNTextInputProps,
 } from 'react-native';
 
-import { Fonts, Spacing } from '@/constants/theme';
+import { Fonts, Radius, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 
 export type TextInputProps = RNTextInputProps;
-
-const MIN_TOUCH_TARGET = 44;
 
 export const TextInput = ({ style, placeholderTextColor, ...props }: TextInputProps) => {
   const theme = useTheme();
@@ -22,7 +20,7 @@ export const TextInput = ({ style, placeholderTextColor, ...props }: TextInputPr
         styles.input,
         {
           backgroundColor: theme.surface,
-          borderColor: theme.backgroundSelected,
+          borderColor: theme.border,
           color: theme.text,
         },
         style,
@@ -34,11 +32,11 @@ export const TextInput = ({ style, placeholderTextColor, ...props }: TextInputPr
 
 const styles = StyleSheet.create({
   input: {
-    minHeight: MIN_TOUCH_TARGET,
+    minHeight: 52,
     paddingHorizontal: Spacing.three,
     paddingVertical: Spacing.two,
     borderWidth: 1,
-    borderRadius: Spacing.three,
+    borderRadius: Radius.input,
     fontSize: 16,
     fontFamily: Fonts?.sans,
   },

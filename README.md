@@ -59,7 +59,7 @@ Vela mobile app from the [VelaPayments](https://github.com/VelaPayments) organiz
 Run before opening a PR:
 
 ```bash
-npm run build
+npm run typecheck
 npm run lint
 npm run test
 npm run format:check
@@ -106,16 +106,19 @@ See [docs/adr-nfc-library.md](docs/adr-nfc-library.md) for platform constraints 
 
 ## Scripts
 
-| Command                               | Description                |
-| ------------------------------------- | -------------------------- |
-| `npm start`                           | Start Expo dev server      |
-| `npm run dev-client`                  | Start Expo with dev-client |
-| `npm run build` / `npm run typecheck` | TypeScript check           |
-| `npm test`                            | Run unit tests             |
-| `npm run lint`                        | ESLint via Expo            |
-| `npm run format:check`                | Prettier check (CI)        |
+| Command                | Description                |
+| ---------------------- | -------------------------- |
+| `npm start`            | Start Expo dev server      |
+| `npm run dev-client`   | Start Expo with dev-client |
+| `npm run build`        | Export the web app to dist |
+| `npm run typecheck`    | TypeScript check           |
+| `npm test`             | Run unit tests             |
+| `npm run lint`         | ESLint via Expo            |
+| `npm run format:check` | Prettier check (CI)        |
 
 ## Documentation
+
+- [Vercel deployment](docs/deployment.md)
 
 - [Product flows & system definition](docs/vela-overview.md)
 - [Client MVP build plan](docs/build-plan-client-mvp.md)
