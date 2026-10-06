@@ -74,6 +74,13 @@ describe('authErrors', () => {
       expect(err.code).toBe(AuthErrorCode.USER_CANCELLED);
     });
 
+    it('maps a native timeout to a safe passkey error', () => {
+      const err = mapNativePasskeyError({ error: 'TimeoutError', message: 'native timeout details' });
+
+      expect(err.code).toBe(AuthErrorCode.TIMEOUT);
+      expect(err.message).not.toContain('native timeout details');
+    });
+
     it('maps NoCredentials to NO_CREDENTIAL', () => {
       const err = mapNativePasskeyError({ error: 'NoCredentials', message: 'no creds' });
       expect(err.code).toBe(AuthErrorCode.NO_CREDENTIAL);
