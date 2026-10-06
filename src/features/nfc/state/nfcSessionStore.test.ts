@@ -44,4 +44,14 @@ describe('nfcSessionStore', () => {
     expect(state.nfcActive).toBe(false);
     expect(state.error).toBeNull();
   });
+
+  it('clears the active flag when a session is cancelled', () => {
+    useNfcSessionStore.getState().beginScanning();
+
+    useNfcSessionStore.getState().reset();
+
+    const state = useNfcSessionStore.getState();
+    expect(state.status).toBe('idle');
+    expect(state.nfcActive).toBe(false);
+  });
 });
