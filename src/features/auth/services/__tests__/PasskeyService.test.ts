@@ -84,6 +84,13 @@ describe('authErrors', () => {
       expect(err.code).toBe(AuthErrorCode.UNKNOWN);
     });
 
+    it('handles an empty native error message', () => {
+      const err = mapNativePasskeyError({ error: 'SomethingNew', message: '' });
+
+      expect(err.code).toBe(AuthErrorCode.UNKNOWN);
+      expect(err.message).toBeTruthy();
+    });
+
     it('handles non-object errors gracefully', () => {
       const err = mapNativePasskeyError('just a string');
       expect(err.code).toBe(AuthErrorCode.UNKNOWN);
