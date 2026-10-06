@@ -71,6 +71,14 @@ describe('parseBalances', () => {
     const result = parseBalances({ balances: [] });
     expect(result.xlm).toBe('0');
   });
+
+  it('ignores a native balance with a non-XLM asset type', () => {
+    const result = parseBalances({
+      balances: [{ asset_type: 'credit_alphanum4', asset_code: 'XLM', balance: '9' } as never],
+    });
+
+    expect(result.xlm).toBe('0');
+  });
 });
 
 describe('fetchBalances', () => {
