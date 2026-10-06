@@ -5,6 +5,10 @@ describe('formatBalance', () => {
     expect(formatBalance('100.0000000')).toBe('100');
   });
 
+  it('formats zero without decimal places', () => {
+    expect(formatBalance(0)).toBe('0');
+  });
+
   it('trims trailing zeros while keeping significant decimals', () => {
     expect(formatBalance('1234.5000000')).toBe('1,234.5');
   });
