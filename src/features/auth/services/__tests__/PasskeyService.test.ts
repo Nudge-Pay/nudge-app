@@ -353,6 +353,12 @@ describe('PasskeyService', () => {
       expect(SecureKeyStore.delete).toHaveBeenCalledTimes(3);
     });
 
+    it('deletes the stored credential ID after logout', async () => {
+      await PasskeyService.revoke();
+
+      expect(SecureKeyStore.delete).toHaveBeenCalledWith('ding.passkey.credentialId');
+    });
+
     it('returns STORE_ERROR if delete fails', async () => {
       (SecureKeyStore.delete as jest.Mock).mockRejectedValueOnce(new Error('store locked'));
 
