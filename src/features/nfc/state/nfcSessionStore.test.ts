@@ -28,6 +28,14 @@ describe('nfcSessionStore', () => {
     expect(state.nfcActive).toBe(false);
   });
 
+  it('clears the active flag when a scan fails', () => {
+    useNfcSessionStore.getState().beginScanning();
+    useNfcSessionStore.getState().setError(new NfcError('NFC_UNAVAILABLE', 'scan failed'));
+
+    expect(useNfcSessionStore.getState().status).toBe('error');
+    expect(useNfcSessionStore.getState().nfcActive).toBe(false);
+  });
+
   it('enforces one active session at a time', () => {
     useNfcSessionStore.getState().beginWriting();
 
