@@ -38,6 +38,16 @@ describe('PaymentRequestBuilder', () => {
     expect(DEFAULT_EXPIRY_TTL_SECONDS).toBe(5 * 60);
   });
 
+  it('builds a request with the minimum valid amount', () => {
+    const request = new PaymentRequestBuilder().build({
+      amount: '0.0000001',
+      asset: 'XLM',
+      recipientPublicKey: VALID_RECIPIENT,
+    });
+
+    expect(request.amount).toBe('0.0000001');
+  });
+
   it('produces correct type/recipient/asset/amount across repeated calls', () => {
     const builder = new PaymentRequestBuilder();
 
