@@ -17,6 +17,10 @@ describe('formatBalance', () => {
     expect(formatBalance(42)).toBe('42');
   });
 
+  it('formats a negative numeric input', () => {
+    expect(formatBalance(-42)).toBe('-42');
+  });
+
   it('returns 0 for non-numeric input', () => {
     expect(formatBalance('not-a-number')).toBe('0');
   });
