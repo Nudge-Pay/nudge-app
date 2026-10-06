@@ -1,4 +1,4 @@
-import { assertNoSecrets } from '../paymentRequest';
+import { assertNoSecrets, parsePaymentRequest } from '../paymentRequest';
 
 describe('paymentRequest security guard', () => {
   it('throws when forbidden keys present', () => {
@@ -9,5 +9,19 @@ describe('paymentRequest security guard', () => {
   it('allows normal payloads', () => {
     const ok = { id: '1', amount: 10, currency: 'USD' };
     expect(() => assertNoSecrets(ok)).not.toThrow();
+  });
+
+  it('rejects a payment request containing a constructor key', () => {
+    const payload = {
+      type: 'payment_request',
+      recipient: 'GBBD47IF6LWK7P7MUGHC2XLYUUXV6ZLW75PN7CHLIW2NSIW74UZEST66',
+      asset: 'USDC',
+      amount: '1.00',
+      timestamp: 1_740_000_000,
+      expiresAt: 1_740_000_030,
+      constructor: { prototype: { compromised: true } },
+    };
+
+    expect(() => parsePaymentRequest(payload)).toThrow();
   });
 });
