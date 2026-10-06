@@ -49,6 +49,16 @@ describe('ReceiveSessionManager', () => {
     expect(onTimeout).not.toHaveBeenCalled();
   });
 
+  it('clears timers when cancelAll is called with no active timers', () => {
+    expect(() => manager.cancelAll()).not.toThrow();
+
+    const onExpire = jest.fn();
+    manager.startRequestExpiry(1, onExpire);
+    jest.advanceTimersByTime(1_000);
+
+    expect(onExpire).toHaveBeenCalledTimes(1);
+  });
+
   it('startWaitTimeout fires onTimeout after the given delay', () => {
     const onTimeout = jest.fn();
 
