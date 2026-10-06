@@ -64,6 +64,10 @@ describe('receiveAmountSchema', () => {
     expect(result.success).toBe(false);
   });
 
+  it('rejects an amount containing whitespace', () => {
+    expect(receiveAmountSchema.safeParse({ amount: '1 0', asset: 'XLM' }).success).toBe(false);
+  });
+
   it('rejects an unsupported asset', () => {
     const result = receiveAmountSchema.safeParse({ amount: '10', asset: 'BTC' });
     expect(result.success).toBe(false);
