@@ -47,6 +47,7 @@ export const paymentRequestSchema = z
     timestamp: z.number().int().positive(),
     expiresAt: z.number().int().positive(),
   })
+  .strict()
   .refine((data) => data.expiresAt > data.timestamp, {
     message: 'expiresAt must be after timestamp',
     path: ['expiresAt'],
