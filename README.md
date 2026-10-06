@@ -1,10 +1,45 @@
 <p align="center"><img src="assets/brand/vela-mark.png" alt="Vela" width="120" /></p>
 
-# Vela — Mobile Client MVP
+# Vela — Mobile Client
 
-Peer-to-peer contactless (NFC) payments on Stellar with a self-custodial wallet and passkey authentication.
+An open-source mobile prototype exploring contactless payment requests, a self-custodial wallet and passkey access on [Stellar](https://stellar.org) testnet.
 
 Vela mobile app from the [VelaPayments](https://github.com/VelaPayments) organization, built with Expo and React Native.
+
+> **Backend:** The NestJS API lives in [VelaPayments/vela-server](https://github.com/VelaPayments/vela-server).
+
+## How Vela uses Stellar
+
+Vela brings Stellar account and asset primitives into a mobile payment experience. A receiver prepares a request containing their Stellar public address, asset, amount and expiry, then shares it over NFC. The intended next step is for the payer to approve a Stellar transaction and for both devices to observe network confirmation. The client send/settlement integration is still unfinished.
+
+The implemented wallet and request modules use `@stellar/stellar-sdk`:
+
+| Capability            | Implementation                                                                                                                        | Role in Vela                                                                                                              |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| Wallet keys           | [AccountService](src/features/wallet/services/AccountService.ts)                                                                      | Creates a Stellar keypair when needed and persists keys through the app's native secure-storage wrapper                   |
+| Testnet onboarding    | `AccountService.fundTestnetAccount`                                                                                                   | Uses Friendbot for testnet funding; automatic funding is blocked on mainnet                                               |
+| Account balances      | [BalanceService](src/features/wallet/services/BalanceService.ts)                                                                      | Loads accounts through Horizon and reads native XLM and the configured USDC code/issuer pair                              |
+| USDC trustlines       | [TrustlineService](src/features/wallet/services/TrustlineService.ts)                                                                  | Checks existing trustlines, available XLM reserves and key ownership; builds and signs `changeTrust` when setup is needed |
+| Payment requests      | [PaymentRequestBuilder](src/features/receive/services/PaymentRequestBuilder.ts)                                                       | Builds expiring requests from the receiver's public key, asset and decimal amount                                         |
+| Contactless transport | [NFC codec](src/features/nfc/services/NfcPayloadCodec.ts) and [receive orchestrator](src/features/receive/hooks/useReceivePayment.ts) | Encodes requests, enforces byte limits and coordinates broadcast, waiting and cancellation states                         |
+
+NFC delivery reports that the request reached the other device. A successful payment requires a separate confirmed Stellar transaction. Passkeys currently protect the app's access flow; the authentication-to-payment integration still needs server wiring and physical-device verification.
+
+### Network and assets
+
+The web build defaults to a testnet UI preview. Native wallet and trustline code uses the network endpoints and issuer configured in [src/lib/env.ts](src/lib/env.ts). Mainnet requires explicit configuration and is not the verified operating mode of this prototype.
+
+- **XLM:** Stellar's native asset, used by the wallet and its reserve checks.
+- **USDC:** Selected using both asset code and configured issuer. Testnet values are for testing; they do not represent real funds.
+- **Amount precision:** Wallet asset definitions allow seven decimal places. The current receive UI restricts USDC input to two decimals as a product rule; that is distinct from Stellar's asset precision.
+
+See [Stellar's asset model](https://developers.stellar.org/docs/learn/fundamentals/stellar-data-structures/assets) for code/issuer identification and amount precision.
+
+### Work that advances the Stellar integration
+
+- Coordinate the [shared payment contract](https://github.com/VelaPayments/vela-server/issues/3) across both repositories.
+- [Cover trustline key ownership and reserve checks](https://github.com/VelaPayments/vela-payments/issues/61).
+- [Improve NFC byte-size and decoding coverage](https://github.com/VelaPayments/vela-payments/issues/17).
 
 ## Project status
 
@@ -144,4 +179,4 @@ See [docs/adr-nfc-library.md](docs/adr-nfc-library.md) for platform constraints 
 
 ## License
 
-MIT
+[MIT](LICENSE). Existing Expo attribution is preserved.
