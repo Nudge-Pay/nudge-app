@@ -11,6 +11,10 @@ describe('receiveAmountSchema', () => {
     expect(result.success).toBe(true);
   });
 
+  it('accepts a USDC amount with one decimal place', () => {
+    expect(receiveAmountSchema.safeParse({ amount: '25.5', asset: 'USDC' }).success).toBe(true);
+  });
+
   it('rejects USDC amounts with 3 decimal places', () => {
     const result = receiveAmountSchema.safeParse({ amount: '25.123', asset: 'USDC' });
     expect(result.success).toBe(false);
