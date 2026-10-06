@@ -9,6 +9,10 @@ describe('formatBalance', () => {
     expect(formatBalance('1234.5000000')).toBe('1,234.5');
   });
 
+  it('formats a number with leading fractional zeroes', () => {
+    expect(formatBalance('0.0012')).toBe('0.0012');
+  });
+
   it('caps fraction digits to the given precision', () => {
     expect(formatBalance('10.123456', 2)).toBe('10.12');
   });
