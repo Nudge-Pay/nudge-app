@@ -21,6 +21,12 @@ describe('receiveAmountSchema', () => {
     expect(result.success).toBe(true);
   });
 
+  it('rejects XLM with one digit beyond maximum precision', () => {
+    const result = receiveAmountSchema.safeParse({ amount: '1.12345678', asset: 'XLM' });
+
+    expect(result.success).toBe(false);
+  });
+
   it('rejects a zero amount', () => {
     const result = receiveAmountSchema.safeParse({ amount: '0', asset: 'XLM' });
     expect(result.success).toBe(false);
