@@ -123,6 +123,16 @@ describe('ensureUsdcTrustline', () => {
     expect(server.submitTransaction).not.toHaveBeenCalled();
   });
 
+  it('returns a safe error when account lookup fails', async () => {
+    server.loadAccount.mockRejectedValueOnce(new Error('private Horizon details'));
+
+    const result = await ensureUsdcTrustline('GPUB');
+
+    expect(result.status).toBe('error');
+    expect(result.message).toBeTruthy();
+    expect(result.message).not.toContain('private Horizon details');
+  });
+
   it('surfaces a user-safe error when the reserve is insufficient, without touching the secret key', async () => {
     server.loadAccount.mockResolvedValueOnce({
       balances: [{ asset_type: 'native', balance: '1.0000000' }],
