@@ -3,6 +3,10 @@ import { TrustlineService } from '@/features/wallet/services/TrustlineService';
 const mockLoadAccount = jest.fn();
 
 jest.mock('@stellar/stellar-sdk', () => ({
+  Networks: {
+    PUBLIC: 'Public Global Stellar Network ; September 2015',
+    TESTNET: 'Test SDF Network ; September 2015',
+  },
   Horizon: {
     Server: jest.fn().mockImplementation(() => ({
       loadAccount: mockLoadAccount,
@@ -49,6 +53,15 @@ describe('TrustlineService', () => {
     // sufficientReserve is a static true for MVP (see TrustlineService) except
     // when the account lookup itself fails — that's the "not found" case below.
     expect(result).toEqual({ hasLine: false, sufficientReserve: true });
+  });
+
+  it('returns false when the account has no balance entries', async () => {
+    mockLoadAccount.mockResolvedValue({ balances: [] });
+
+    const service = new TrustlineService();
+    const result = await service.checkUsdcTrustline(PUBLIC_KEY);
+
+    expect(result.hasLine).toBe(false);
   });
 
   it('returns hasLine: false when the account cannot be found', async () => {
