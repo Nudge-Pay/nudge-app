@@ -71,6 +71,14 @@ describe('parseBalances', () => {
     const result = parseBalances({ balances: [] });
     expect(result.xlm).toBe('0');
   });
+
+  it('returns zero balances when the account has no balance entries', () => {
+    expect(parseBalances({ balances: [] })).toEqual({
+      xlm: '0',
+      usdc: null,
+      hasUsdcTrustline: false,
+    });
+  });
 });
 
 describe('fetchBalances', () => {
