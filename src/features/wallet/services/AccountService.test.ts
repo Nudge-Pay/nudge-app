@@ -74,6 +74,17 @@ describe('AccountService.getOrCreateKeypair', () => {
       expect.any(String)
     );
   });
+
+  it('does not persist a keypair when key generation fails', async () => {
+    (SecureKeyStore.get as jest.Mock).mockResolvedValueOnce(null);
+    const { Keypair } = jest.requireMock('@stellar/stellar-sdk') as { Keypair: { random: jest.Mock } };
+    Keypair.random.mockImplementationOnce(() => {
+      throw new Error('key generation failed');
+    });
+
+    await expect(AccountService.getOrCreateKeypair()).rejects.toThrow('key generation failed');
+    expect(SecureKeyStore.set).not.toHaveBeenCalled();
+  });
 });
 
 describe('AccountService.accountExistsOnNetwork', () => {
