@@ -6,6 +6,21 @@ Peer-to-peer contactless (NFC) payments on Stellar with a self-custodial wallet 
 
 Vela mobile app from the [VelaPayments](https://github.com/VelaPayments) organization, built with Expo and React Native.
 
+## Project status
+
+Vela is an early Stellar testnet prototype under active development. It is not ready for real funds or production payment use.
+
+| Area             | Current status                                                                                                          |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| Web preview      | [Live UI preview](https://vela-payments.vercel.app/); browser passkey setup and NFC are unavailable                     |
+| Mobile           | Native onboarding, wallet and receive-flow code; requires a development build and physical-device validation            |
+| Sending payments | Client Send screen is a scaffold; end-to-end payment completion is not demonstrated                                     |
+| Authentication   | Client auth uses local challenges and placeholder API responses; server verification integration remains unfinished     |
+| Shared payload   | Client and server currently use different type/timestamp formats; reconciliation is tracked in the contribution backlog |
+| Compatibility    | Passkey RP domain and app/storage/NFC identifiers are pending a coordinated migration decision                          |
+
+See [contributing](CONTRIBUTING.md) and [Wave preparation](docs/wave-readiness.md) for current priorities. Architecture/build-plan documents include intended features and must not be treated as proof of completed functionality.
+
 ## Prerequisites
 
 - **Node.js** v20+

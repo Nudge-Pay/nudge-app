@@ -38,3 +38,9 @@ jobs:
 
       - name: Format check
         run: npm run format:check
+
+      - name: Unit tests
+        run: npm test -- --runInBand
+
+      - name: Web export
+        run: npm run build

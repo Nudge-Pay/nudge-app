@@ -3,6 +3,10 @@ import { TrustlineService } from '@/features/wallet/services/TrustlineService';
 const mockLoadAccount = jest.fn();
 
 jest.mock('@stellar/stellar-sdk', () => ({
+  Networks: {
+    PUBLIC: 'Public Global Stellar Network ; September 2015',
+    TESTNET: 'Test SDF Network ; September 2015',
+  },
   Horizon: {
     Server: jest.fn().mockImplementation(() => ({
       loadAccount: mockLoadAccount,
