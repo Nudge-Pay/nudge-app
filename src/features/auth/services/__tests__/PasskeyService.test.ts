@@ -331,6 +331,24 @@ describe('PasskeyService', () => {
       }
     });
 
+    it('returns a safe error when the native passkey prompt fails', async () => {
+      (Passkey.get as jest.Mock).mockRejectedValueOnce({
+        error: 'RequestFailed',
+        message: 'native prompt internals',
+      });
+
+      const result = await PasskeyService.authenticate({
+        rpId: 'dingpayments.app',
+        challenge: 'dGVzdA==',
+      });
+
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error.code).toBe(AuthErrorCode.UNKNOWN);
+        expect(result.error.message).not.toContain('native prompt internals');
+      }
+    });
+
     it('returns NOT_SUPPORTED when passkeys unavailable', async () => {
       (Passkey.isSupported as jest.Mock).mockReturnValue(false);
       const result = await PasskeyService.authenticate({
