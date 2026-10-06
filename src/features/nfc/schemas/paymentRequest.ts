@@ -46,6 +46,9 @@ export const paymentRequestSchema = z
       .refine((value) => parseFloat(value) > 0, 'Amount must be greater than zero'),
     timestamp: z.number().int().positive(),
     expiresAt: z.number().int().positive(),
+    memo: z.string().max(280).optional(),
+    requestId: z.string().min(1).max(128).optional(),
+    metadata: z.record(z.string(), z.unknown()).optional(),
   })
   .strict()
   .refine((data) => data.expiresAt > data.timestamp, {
@@ -106,5 +109,8 @@ export function createPaymentRequest(
     amount: partial.amount,
     timestamp,
     expiresAt,
+    ...(partial.memo === undefined ? {} : { memo: partial.memo }),
+    ...(partial.requestId === undefined ? {} : { requestId: partial.requestId }),
+    ...(partial.metadata === undefined ? {} : { metadata: partial.metadata }),
   });
 }
