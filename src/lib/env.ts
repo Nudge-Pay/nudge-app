@@ -32,9 +32,23 @@ if (network !== 'testnet' && network !== 'mainnet') {
   );
 }
 
-const horizonUrl = getEnvVar('EXPO_PUBLIC_HORIZON_URL', process.env.EXPO_PUBLIC_HORIZON_URL);
-const rpcUrl = getEnvVar('EXPO_PUBLIC_RPC_URL', process.env.EXPO_PUBLIC_RPC_URL);
-const usdcIssuer = getEnvVar('EXPO_PUBLIC_USDC_ISSUER', process.env.EXPO_PUBLIC_USDC_ISSUER);
+// Public testnet defaults let the preview build without Vercel environment setup.
+// Mainnet must supply every value explicitly and never inherits testnet defaults.
+const horizonUrl = getEnvVar(
+  'EXPO_PUBLIC_HORIZON_URL',
+  process.env.EXPO_PUBLIC_HORIZON_URL,
+  network === 'testnet' ? 'https://horizon-testnet.stellar.org' : undefined
+);
+const rpcUrl = getEnvVar(
+  'EXPO_PUBLIC_RPC_URL',
+  process.env.EXPO_PUBLIC_RPC_URL,
+  network === 'testnet' ? 'https://soroban-testnet.stellar.org' : undefined
+);
+const usdcIssuer = getEnvVar(
+  'EXPO_PUBLIC_USDC_ISSUER',
+  process.env.EXPO_PUBLIC_USDC_ISSUER,
+  network === 'testnet' ? 'GBBD47IF6LWK7P7MUGHC2XLYUUXV6ZLW75PN7CHLIW2NSIW74UZEST66' : undefined
+);
 
 // Security Guardrail: Mainnet shouldn't accidentally leak defaults
 if (network === 'mainnet') {
