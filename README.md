@@ -1,20 +1,39 @@
-<p align="center"><img src="assets/brand/vela-mark.png" alt="Vela" width="120" /></p>
+<p align="center"><img src="assets/brand/nudge-mark.png" alt="Nudge" width="120" /></p>
 
-# Vela — Mobile Client
+# Nudge — Mobile Client
+
+![CI](https://github.com/Nudge-Pay/nudge-app/actions/workflows/ci-client.yml/badge.svg)
+![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)
+![Stellar](https://img.shields.io/badge/Stellar-Soroban-7D00FF?logo=stellar&logoColor=white)
 
 An open-source mobile prototype exploring contactless payment requests, a self-custodial wallet and passkey access on [Stellar](https://stellar.org) testnet.
 
-Vela mobile app from the [VelaPayments](https://github.com/VelaPayments) organization, built with Expo and React Native.
+Nudge mobile app from the [Nudge-Pay](https://github.com/Nudge-Pay) organization, built with Expo and React Native.
 
-> **Backend:** The NestJS API lives in [VelaPayments/vela-server](https://github.com/VelaPayments/vela-server).
+> **Backend:** The NestJS API lives in [Nudge-Pay/nudge-server](https://github.com/Nudge-Pay/nudge-server).
 
-## How Vela uses Stellar
+## Table of Contents
 
-Vela brings Stellar account and asset primitives into a mobile payment experience. A receiver prepares a request containing their Stellar public address, asset, amount and expiry, then shares it over NFC. The intended next step is for the payer to approve a Stellar transaction and for both devices to observe network confirmation. The client send/settlement integration is still unfinished.
+- [How Nudge uses Stellar](#how-nudge-uses-stellar)
+- [Project status](#project-status)
+- [Prerequisites](#prerequisites)
+- [Setup](#setup)
+- [EAS Development Build](#eas-development-build)
+- [Quality checks (CI)](#quality-checks-ci)
+- [C05 Spike documentation](#c05-spike-documentation)
+- [NFC development (C10)](#nfc-development-c10)
+- [Scripts](#scripts)
+- [Documentation](#documentation)
+- [Environment variables](#environment-variables)
+- [Security](#security)
+
+## How Nudge uses Stellar
+
+Nudge brings Stellar account and asset primitives into a mobile payment experience. A receiver prepares a request containing their Stellar public address, asset, amount and expiry, then shares it over NFC. The intended next step is for the payer to approve a Stellar transaction and for both devices to observe network confirmation. The client send/settlement integration is still unfinished.
 
 The implemented wallet and request modules use `@stellar/stellar-sdk`:
 
-| Capability            | Implementation                                                                                                                        | Role in Vela                                                                                                              |
+| Capability            | Implementation                                                                                                                        | Role in Nudge                                                                                                              |
 | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
 | Wallet keys           | [AccountService](src/features/wallet/services/AccountService.ts)                                                                      | Creates a Stellar keypair when needed and persists keys through the app's native secure-storage wrapper                   |
 | Testnet onboarding    | `AccountService.fundTestnetAccount`                                                                                                   | Uses Friendbot for testnet funding; automatic funding is blocked on mainnet                                               |
@@ -37,17 +56,17 @@ See [Stellar's asset model](https://developers.stellar.org/docs/learn/fundamenta
 
 ### Work that advances the Stellar integration
 
-- Coordinate the [shared payment contract](https://github.com/VelaPayments/vela-server/issues/3) across both repositories.
-- [Cover trustline key ownership and reserve checks](https://github.com/VelaPayments/vela-payments/issues/61).
-- [Improve NFC byte-size and decoding coverage](https://github.com/VelaPayments/vela-payments/issues/17).
+- Coordinate the [shared payment contract](https://github.com/Nudge-Pay/nudge-server/issues/3) across both repositories.
+- [Cover trustline key ownership and reserve checks](https://github.com/Nudge-Pay/nudge-payments/issues/61).
+- [Improve NFC byte-size and decoding coverage](https://github.com/Nudge-Pay/nudge-payments/issues/17).
 
 ## Project status
 
-Vela is an early Stellar testnet prototype under active development. It is not ready for real funds or production payment use.
+Nudge is an early Stellar testnet prototype under active development. It is not ready for real funds or production payment use.
 
 | Area             | Current status                                                                                                          |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| Web preview      | [Live UI preview](https://vela-payments.vercel.app/); browser passkey setup and NFC are unavailable                     |
+| Web preview      | [Live UI preview](https://nudge-payments.vercel.app/); browser passkey setup and NFC are unavailable                     |
 | Mobile           | Native onboarding, wallet and receive-flow code; requires a development build and physical-device validation            |
 | Sending payments | Client Send screen is a scaffold; end-to-end payment completion is not demonstrated                                     |
 | Authentication   | Client auth uses local challenges and placeholder API responses; server verification integration remains unfinished     |
@@ -170,12 +189,27 @@ See [docs/adr-nfc-library.md](docs/adr-nfc-library.md) for platform constraints 
 
 - [Vercel deployment](docs/deployment.md)
 
-- [Product flows & system definition](docs/vela-overview.md)
+- [Product flows & system definition](docs/nudge-overview.md)
 - [Client MVP build plan](docs/build-plan-client-mvp.md)
 - [NFC library ADR](docs/adr-nfc-library.md)
 - [Receive payment flow (C12)](docs/receive-flow.md)
 - [NFC runtime flow and troubleshooting](docs/nfc-flow.md)
 - [NFC device checklist](docs/nfc-device-checklist.md)
+
+## Environment variables
+
+Copy `.env.example` to `.env` and fill in your values (see the file for inline docs). Key groups:
+
+| Variable group | Key variables |
+| --- | --- |
+| Stellar | `EXPO_PUBLIC_STELLAR_NETWORK`, `EXPO_PUBLIC_HORIZON_URL`, `EXPO_PUBLIC_RPC_URL`, `EXPO_PUBLIC_USDC_ISSUER` |
+
+## Security
+
+- **Never commit secrets** — keep keys, seed phrases, and `.env` files out of source control.
+- **Testnet values have no real-world value**; treat testnet deployments as experimental.
+- **Keys never leave the wallet** — signing is delegated to the user's Stellar wallet; the app does not store secret keys.
+- Report vulnerabilities per `SECURITY.md` where present rather than opening a public issue.
 
 ## License
 
