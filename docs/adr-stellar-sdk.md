@@ -26,17 +26,22 @@ We will use `@stellar/stellar-sdk` with explicit runtime polyfills for React Nat
 
 ## Version pinning
 
-- `@stellar/stellar-sdk@^9.6.0`
-- `react-native-get-random-values@^1.0.2`
-- `buffer@^6.0.3`
-- `process@^0.11.10`
-- `stream-browserify@^3.0.0`
-- `crypto-browserify@^3.19.2`
+The canonical source of truth for runtime versions is `package.json`.
+
+| Dependency | Installed version (`package.json`) | Originally evaluated | Notes |
+| --- | --- | --- | --- |
+| `@stellar/stellar-sdk` | `^11.3.0` | `^9.6.0` | Bumped to v11 for modern Horizon client (`Horizon.Server`), Soroban RPC readiness, and updated types |
+| `react-native-get-random-values` | `~1.11.0` | `^1.0.2` | Bundled Expo 56 compatibility pin for crypto randomness |
+| `buffer` | `^6.0.3` | `^6.0.3` | Global Buffer polyfill required by Stellar SDK |
+| `process` | `^0.11.10` | `^0.11.10` | Process polyfill required for Node.js environment shims |
+| `stream-browserify` | `^3.0.0` | `^3.0.0` | Stream polyfill for bundling compatibility |
+| `crypto-browserify` | `^3.12.1` | `^3.19.2` | Stable Node crypto browser shim |
 
 ## Compatibility notes
 
 - Expo dev-client: required for runtime validation because the normal Expo Go bundle may not include the polyfills needed by Stellar SDK.
-- Node polyfills: the wallet spike must initialize `Buffer`, `process`, and browser-compatible crypto/random value shims before using the SDK.
+- Node polyfills: the wallet modules initialize `Buffer`, `process`, and `react-native-get-random-values` via `src/features/wallet/services/stellarPolyfills.ts` (`ensureStellarPolyfills()`) before executing Horizon queries (`Horizon.Server`) or keypair operations in `AccountService` and `BalanceService`.
+- API implications: v11 provides modern `Horizon.Server` and keypair utilities directly, integrating cleanly with the typed wallet store.
 - Bundle impact: `@stellar/stellar-sdk` increases JS payload size and requires explicit dependency management.
 
 ## Implementation notes
