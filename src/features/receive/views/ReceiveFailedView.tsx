@@ -9,21 +9,23 @@ import { useRouter } from 'expo-router';
 import { ThemedText } from '@/components/themed-text';
 import { Button, Screen } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
+import type { ReceiveFailureReason } from '@/features/receive/hooks/useReceivePayment';
 import { useReceivePaymentContext } from '@/features/receive/hooks/useReceivePayment';
 
-const ERROR_MESSAGES: Record<string, string> = {
+export const ERROR_MESSAGES: Record<ReceiveFailureReason, string> = {
   timeout: 'Payment timed out. Please try again.',
   nfc_error: 'NFC connection was lost.',
   trustline_missing: 'USDC trustline not found. Set up your USDC account first.',
+  unknown: 'Payment failed. Please try again.',
 };
 
-const DEFAULT_MESSAGE = 'Payment failed. Please try again.';
+export const DEFAULT_MESSAGE = ERROR_MESSAGES.unknown;
 
 export const ReceiveFailedView = () => {
   const router = useRouter();
   const { error, paymentRequest, reset } = useReceivePaymentContext();
 
-  const message = (error && ERROR_MESSAGES[error]) ?? DEFAULT_MESSAGE;
+  const message = (error ? ERROR_MESSAGES[error] : undefined) ?? DEFAULT_MESSAGE;
 
   const handleTryAgain = () => {
     const amount = paymentRequest?.amount;

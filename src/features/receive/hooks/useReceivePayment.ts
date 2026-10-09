@@ -41,17 +41,19 @@ export type ReceiveState =
   | 'failed'
   | 'cancelled';
 
+export type ReceiveFailureReason = 'timeout' | 'nfc_error' | 'trustline_missing' | 'unknown';
+
 export interface UseReceivePaymentResult {
   state: ReceiveState;
   paymentRequest: PaymentRequest | null;
-  error: string | null;
+  error: ReceiveFailureReason | null;
   txHash: string | null;
   nfcStatus: ReturnType<typeof useNfcWriter>['status'];
   prepare: (amount: string, asset: SupportedAssetCode, recipientPublicKey: string) => Promise<void>;
   startBroadcast: () => Promise<void>;
   cancel: () => Promise<void>;
   confirmSuccess: (txHash?: string) => void;
-  confirmFailure: (reason: string) => void;
+  confirmFailure: (reason: ReceiveFailureReason) => void;
   reset: () => void;
 }
 
@@ -70,7 +72,7 @@ export function useReceivePayment(): UseReceivePaymentResult {
   // an Effect (see https://react.dev/learn/you-might-not-need-an-effect).
   const [phase, setPhase] = useState<Exclude<ReceiveState, 'waiting'>>('idle');
   const [paymentRequest, setPaymentRequest] = useState<PaymentRequest | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<ReceiveFailureReason | null>(null);
   const [txHash, setTxHash] = useState<string | null>(null);
 
   // Internal-only bookkeeping that is never read during render (only from
@@ -93,7 +95,7 @@ export function useReceivePayment(): UseReceivePaymentResult {
   }, []);
 
   const confirmFailure = useCallback(
-    (reason: string) => {
+    (reason: ReceiveFailureReason) => {
       cancelExpiryTimer();
       setError(reason);
       setPhase('failed');
@@ -157,7 +159,10 @@ export function useReceivePayment(): UseReceivePaymentResult {
         setPaymentRequest(request);
         setPhase('preparing');
       } catch (err) {
-        const reason = err instanceof Error ? err.message : 'unknown';
+        const reason: ReceiveFailureReason =
+          err instanceof Error && err.message === 'trustline_missing'
+            ? 'trustline_missing'
+            : 'unknown';
         confirmFailure(reason);
         throw err;
       }
