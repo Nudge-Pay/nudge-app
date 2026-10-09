@@ -17,7 +17,7 @@ Overview
 
 Handshake
 1. Writer prepares `payment-request.v1` payload with `id` and optional `expiresAt` (epoch seconds).
-2. Reader calls `useNfc().startReading()` and waits for inbound payload.
+2. Reader calls `useNfcReader().startReading()` and waits for inbound payload.
 3. On read, the app validates payload using `validatePaymentRequest()` which enforces expiry and replay dedupe.
 4. If valid, proceed to presentation/confirm UI. If invalid, surface mapped Spanish error copy.
 
