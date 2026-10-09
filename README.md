@@ -33,7 +33,7 @@ Nudge brings Stellar account and asset primitives into a mobile payment experien
 
 The implemented wallet and request modules use `@stellar/stellar-sdk`:
 
-| Capability            | Implementation                                                                                                                        | Role in Nudge                                                                                                              |
+| Capability            | Implementation                                                                                                                        | Role in Nudge                                                                                                             |
 | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
 | Wallet keys           | [AccountService](src/features/wallet/services/AccountService.ts)                                                                      | Creates a Stellar keypair when needed and persists keys through the app's native secure-storage wrapper                   |
 | Testnet onboarding    | `AccountService.fundTestnetAccount`                                                                                                   | Uses Friendbot for testnet funding; automatic funding is blocked on mainnet                                               |
@@ -66,7 +66,7 @@ Nudge is an early Stellar testnet prototype under active development. It is not 
 
 | Area             | Current status                                                                                                          |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| Web preview      | [Live UI preview](https://nudge-payments.vercel.app/); browser passkey setup and NFC are unavailable                     |
+| Web preview      | [Live UI preview](https://nudge-payments.vercel.app/); browser passkey setup and NFC are unavailable                    |
 | Mobile           | Native onboarding, wallet and receive-flow code; requires a development build and physical-device validation            |
 | Sending payments | Client Send screen is a scaffold; end-to-end payment completion is not demonstrated                                     |
 | Authentication   | Client auth uses local challenges and placeholder API responses; server verification integration remains unfinished     |
@@ -89,9 +89,11 @@ See [contributing](CONTRIBUTING.md) and [Wave preparation](docs/wave-readiness.m
 1. Clone and install dependencies:
 
    ```bash
-   npm install
+   npm ci
    cp .env.example .env
    ```
+
+   > **Note:** Use `npm ci` for fresh clones and continuous integration to guarantee reproducible dependency trees matching `package-lock.json`. `npm install` should only be used when intentionally modifying dependencies or updating the lockfile.
 
 2. Build requirements for native features:
 
@@ -200,9 +202,9 @@ See [docs/adr-nfc-library.md](docs/adr-nfc-library.md) for platform constraints 
 
 Copy `.env.example` to `.env` and fill in your values (see the file for inline docs). Key groups:
 
-| Variable group | Key variables |
-| --- | --- |
-| Stellar | `EXPO_PUBLIC_STELLAR_NETWORK`, `EXPO_PUBLIC_HORIZON_URL`, `EXPO_PUBLIC_RPC_URL`, `EXPO_PUBLIC_USDC_ISSUER` |
+| Variable group | Key variables                                                                                              |
+| -------------- | ---------------------------------------------------------------------------------------------------------- |
+| Stellar        | `EXPO_PUBLIC_STELLAR_NETWORK`, `EXPO_PUBLIC_HORIZON_URL`, `EXPO_PUBLIC_RPC_URL`, `EXPO_PUBLIC_USDC_ISSUER` |
 
 ## Security
 
