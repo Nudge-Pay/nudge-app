@@ -9,7 +9,6 @@ This document describes the complete passkey authentication lifecycle for the Ve
 | Service layer | `src/features/auth/services/PasskeyService.ts` |
 | Error mapping | `src/features/auth/services/authErrors.ts` |
 | Service types | `src/features/auth/services/types.ts` |
-| API stub | `src/features/auth/services/AuthApiClient.ts` |
 | State machine | `src/features/auth/state/authStore.ts` |
 | React hook | `src/features/auth/hooks/useAuth.ts` |
 | Session policy | `src/features/auth/hooks/useSessionPolicy.ts` |
@@ -212,12 +211,13 @@ Interrupted        → INTERRUPTED     → "Verification was interrupted…"
 
 ## Server coordination (future)
 
-`AuthApiClient` (CLI-025) provides typed stub interfaces that mirror anticipated S06/S10 server DTOs:
+When live S06/S10 server endpoints are ready, server-backed passkey coordination will use the following endpoints and DTO contracts:
 
-- `POST /v1/auth/register/challenge` → `RegisterChallengeResponse`
-- `POST /v1/auth/register/verify` → `RegisterVerifyResponse`
-- `POST /v1/auth/challenge` → `AuthChallengeResponse`
-- `POST /v1/auth/verify` → `AuthVerifyResponse`
-- `POST /v1/auth/revoke` → `RevokeTokenResponse`
+- `POST /v1/auth/register/challenge` → `RegisterChallengeResponse` (returns challenge, rpId, userId, expiresAt)
+- `POST /v1/auth/register/verify` → `RegisterVerifyResponse` (verifies credential, returns publicKey, sessionToken, expiresAt)
+- `POST /v1/auth/challenge` → `AuthChallengeResponse` (returns challenge, rpId, expiresAt)
+- `POST /v1/auth/verify` → `AuthVerifyResponse` (verifies authentication assertion)
+- `POST /v1/auth/revoke` → `RevokeTokenResponse` (revokes session token)
 
-Replace stub bodies with real `fetch` calls when S06 endpoints are live. Review with S19 observability conventions before shipping to keep client/server auth telemetry compatible.
+Coordinate with S19 observability conventions before shipping to keep client/server auth telemetry compatible.
+
