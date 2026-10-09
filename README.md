@@ -1,4 +1,4 @@
-<p align="center"><img src="assets/brand/nudge-mark.png" alt="Nudge" width="120" /></p>
+<p align="center"><img src="assets/brand/vela-mark.png" alt="Nudge" width="120" /></p>
 
 # Nudge — Mobile Client
 
@@ -33,7 +33,7 @@ Nudge brings Stellar account and asset primitives into a mobile payment experien
 
 The implemented wallet and request modules use `@stellar/stellar-sdk`:
 
-| Capability            | Implementation                                                                                                                        | Role in Nudge                                                                                                              |
+| Capability            | Implementation                                                                                                                        | Role in Nudge                                                                                                             |
 | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
 | Wallet keys           | [AccountService](src/features/wallet/services/AccountService.ts)                                                                      | Creates a Stellar keypair when needed and persists keys through the app's native secure-storage wrapper                   |
 | Testnet onboarding    | `AccountService.fundTestnetAccount`                                                                                                   | Uses Friendbot for testnet funding; automatic funding is blocked on mainnet                                               |
@@ -66,7 +66,7 @@ Nudge is an early Stellar testnet prototype under active development. It is not 
 
 | Area             | Current status                                                                                                          |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| Web preview      | [Live UI preview](https://nudge-payments.vercel.app/); browser passkey setup and NFC are unavailable                     |
+| Web preview      | [Live UI preview](https://nudge-payments.vercel.app/); browser passkey setup and NFC are unavailable                    |
 | Mobile           | Native onboarding, wallet and receive-flow code; requires a development build and physical-device validation            |
 | Sending payments | Client Send screen is a scaffold; end-to-end payment completion is not demonstrated                                     |
 | Authentication   | Client auth uses local challenges and placeholder API responses; server verification integration remains unfinished     |
@@ -189,7 +189,7 @@ See [docs/adr-nfc-library.md](docs/adr-nfc-library.md) for platform constraints 
 
 - [Vercel deployment](docs/deployment.md)
 
-- [Product flows & system definition](docs/nudge-overview.md)
+- [Product flows & system definition](docs/vela-overview.md)
 - [Client MVP build plan](docs/build-plan-client-mvp.md)
 - [NFC library ADR](docs/adr-nfc-library.md)
 - [Receive payment flow (C12)](docs/receive-flow.md)
@@ -200,9 +200,9 @@ See [docs/adr-nfc-library.md](docs/adr-nfc-library.md) for platform constraints 
 
 Copy `.env.example` to `.env` and fill in your values (see the file for inline docs). Key groups:
 
-| Variable group | Key variables |
-| --- | --- |
-| Stellar | `EXPO_PUBLIC_STELLAR_NETWORK`, `EXPO_PUBLIC_HORIZON_URL`, `EXPO_PUBLIC_RPC_URL`, `EXPO_PUBLIC_USDC_ISSUER` |
+| Variable group | Key variables                                                                                              |
+| -------------- | ---------------------------------------------------------------------------------------------------------- |
+| Stellar        | `EXPO_PUBLIC_STELLAR_NETWORK`, `EXPO_PUBLIC_HORIZON_URL`, `EXPO_PUBLIC_RPC_URL`, `EXPO_PUBLIC_USDC_ISSUER` |
 
 ## Security
 
