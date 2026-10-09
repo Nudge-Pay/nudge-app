@@ -33,7 +33,7 @@ Nudge brings Stellar account and asset primitives into a mobile payment experien
 
 The implemented wallet and request modules use `@stellar/stellar-sdk`:
 
-| Capability            | Implementation                                                                                                                        | Role in Nudge                                                                                                              |
+| Capability            | Implementation                                                                                                                        | Role in Nudge                                                                                                             |
 | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
 | Wallet keys           | [AccountService](src/features/wallet/services/AccountService.ts)                                                                      | Creates a Stellar keypair when needed and persists keys through the app's native secure-storage wrapper                   |
 | Testnet onboarding    | `AccountService.fundTestnetAccount`                                                                                                   | Uses Friendbot for testnet funding; automatic funding is blocked on mainnet                                               |
@@ -64,14 +64,14 @@ See [Stellar's asset model](https://developers.stellar.org/docs/learn/fundamenta
 
 Nudge is an early Stellar testnet prototype under active development. It is not ready for real funds or production payment use.
 
-| Area             | Current status                                                                                                          |
-| ---------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| Web preview      | [Live UI preview](https://nudge-payments.vercel.app/); browser passkey setup and NFC are unavailable                     |
-| Mobile           | Native onboarding, wallet and receive-flow code; requires a development build and physical-device validation            |
-| Sending payments | Client Send screen is a scaffold; end-to-end payment completion is not demonstrated                                     |
-| Authentication   | Client auth uses local challenges and placeholder API responses; server verification integration remains unfinished     |
-| Shared payload   | Client and server currently use different type/timestamp formats; reconciliation is tracked in the contribution backlog |
-| Compatibility    | Passkey RP domain and app/storage/NFC identifiers are pending a coordinated migration decision                          |
+| Area             | Current status                                                                                                      |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------- |
+| Web preview      | [Live UI preview](https://nudge-payments.vercel.app/); browser passkey setup and NFC are unavailable                |
+| Mobile           | Native onboarding, wallet and receive-flow code; requires a development build and physical-device validation        |
+| Sending payments | Client Send screen is a scaffold; end-to-end payment completion is not demonstrated                                 |
+| Authentication   | Client auth uses local challenges and placeholder API responses; server verification integration remains unfinished |
+| Shared payload   | Client and server share the `payment-request` version 1 wire format with ISO-8601 UTC timestamps                    |
+| Compatibility    | Passkey RP domain and app/storage/NFC identifiers are pending a coordinated migration decision                      |
 
 See [contributing](CONTRIBUTING.md) and [Wave preparation](docs/wave-readiness.md) for current priorities. Architecture/build-plan documents include intended features and must not be treated as proof of completed functionality.
 
@@ -200,9 +200,9 @@ See [docs/adr-nfc-library.md](docs/adr-nfc-library.md) for platform constraints 
 
 Copy `.env.example` to `.env` and fill in your values (see the file for inline docs). Key groups:
 
-| Variable group | Key variables |
-| --- | --- |
-| Stellar | `EXPO_PUBLIC_STELLAR_NETWORK`, `EXPO_PUBLIC_HORIZON_URL`, `EXPO_PUBLIC_RPC_URL`, `EXPO_PUBLIC_USDC_ISSUER` |
+| Variable group | Key variables                                                                                              |
+| -------------- | ---------------------------------------------------------------------------------------------------------- |
+| Stellar        | `EXPO_PUBLIC_STELLAR_NETWORK`, `EXPO_PUBLIC_HORIZON_URL`, `EXPO_PUBLIC_RPC_URL`, `EXPO_PUBLIC_USDC_ISSUER` |
 
 ## Security
 

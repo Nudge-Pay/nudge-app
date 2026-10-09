@@ -2,6 +2,7 @@ import {
   createPaymentRequest,
   parsePaymentRequest,
   parsePaymentRequestFresh,
+  parsePaymentRequestWire,
   validateExpiry,
 } from '@/features/nfc/schemas/paymentRequest';
 
@@ -71,5 +72,31 @@ describe('paymentRequest schema', () => {
     expect(() => parsePaymentRequestFresh(basePayload, basePayload.expiresAt * 1000 + 1)).toThrow(
       /expired/i
     );
+  });
+
+  describe('paymentRequestWire schema', () => {
+    const validWirePayload = {
+      type: 'payment-request' as const,
+      version: 1 as const,
+      recipient: VALID_RECIPIENT,
+      asset: 'USDC' as const,
+      amount: '25.00',
+      timestamp: '2026-05-29T12:00:00.000Z',
+      expiresAt: '2026-05-29T12:15:00.000Z',
+    };
+
+    it('accepts a valid payment-request.v1 wire payload', () => {
+      expect(parsePaymentRequestWire(validWirePayload)).toEqual(validWirePayload);
+    });
+
+    it('rejects wire payload with non-ISO timestamps or invalid version', () => {
+      expect(() =>
+        parsePaymentRequestWire({ ...validWirePayload, timestamp: '1740000000' })
+      ).toThrow();
+      expect(() => parsePaymentRequestWire({ ...validWirePayload, version: 2 as any })).toThrow();
+      expect(() =>
+        parsePaymentRequestWire({ ...validWirePayload, type: 'payment_request' as any })
+      ).toThrow();
+    });
   });
 });

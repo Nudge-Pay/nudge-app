@@ -2,24 +2,27 @@ import { MAX_NDEF_PAYLOAD_BYTES } from '@/features/nfc/constants/nfcConstants';
 import {
   parsePaymentRequest,
   parsePaymentRequestFresh,
+  parsePaymentRequestWire,
   type PaymentRequest,
+  type PaymentRequestWire,
+  ISO_UTC_PATTERN,
   PaymentRequestValidationError,
 } from '@/features/nfc/schemas/paymentRequest';
 import { NfcError } from '@/features/nfc/services/NfcService.types';
 
 const textEncoder = new TextEncoder();
 const textDecoder = new TextDecoder();
-const ISO_UTC_PATTERN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?Z$/;
 
 export function encodePaymentRequest(request: PaymentRequest): Uint8Array {
   const validated = parsePaymentRequest(request);
-  const json = JSON.stringify({
+  const wirePayload: PaymentRequestWire = parsePaymentRequestWire({
     ...validated,
     type: 'payment-request',
     version: 1,
     timestamp: new Date(Math.round(validated.timestamp * 1000)).toISOString(),
     expiresAt: new Date(Math.round(validated.expiresAt * 1000)).toISOString(),
   });
+  const json = JSON.stringify(wirePayload);
   const bytes = textEncoder.encode(json);
 
   assertMaxPayloadSize(bytes);
