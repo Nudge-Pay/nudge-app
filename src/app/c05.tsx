@@ -26,6 +26,10 @@ function ActionButton({ label, onPress }: { label: string; onPress: () => Promis
 }
 
 export default function C05Screen() {
+  if (!__DEV__) {
+    return null;
+  }
+
   const [logs, setLogs] = useState<string[]>([]);
 
   const appendLog = (message: string) => {

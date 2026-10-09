@@ -43,7 +43,7 @@ export default function RootLayout() {
               <Stack.Screen name="index" />
               <Stack.Screen name="(tabs)" />
               <Stack.Screen name="(onboarding)" />
-              <Stack.Screen name="c05" />
+              {__DEV__ && <Stack.Screen name="c05" />}
             </Stack>
           </ReceivePaymentProvider>
         </AuthProvider>
