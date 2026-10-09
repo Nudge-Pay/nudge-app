@@ -1,26 +1,19 @@
-import { Buffer } from 'buffer';
-import process from 'process';
-import 'react-native-get-random-values';
-import { Horizon, Keypair } from '@stellar/stellar-sdk';
+import { Horizon } from '@stellar/stellar-sdk';
+
+import { AccountService } from './AccountService';
+import { ensureStellarPolyfills } from './stellarPolyfills';
 
 export type StellarSpikeResult =
-  | { success: true; publicKey: string; secretKey: string; accountData: unknown }
+  | { success: true; publicKey: string; accountData: unknown }
   | { success: false; reason: string };
 
 export async function runStellarSpike(
   horizonUrl = 'https://horizon-testnet.stellar.org'
 ): Promise<StellarSpikeResult> {
   try {
-    const globalScope = globalThis as typeof globalThis & {
-      Buffer?: typeof Buffer;
-      process?: typeof process;
-    };
-    globalScope.Buffer = globalScope.Buffer ?? Buffer;
-    globalScope.process = globalScope.process ?? process;
+    ensureStellarPolyfills();
 
-    const keypair = Keypair.random();
-    const publicKey = keypair.publicKey();
-    const secretKey = keypair.secret();
+    const { publicKey } = await AccountService.getOrCreateKeypair();
 
     const server = new Horizon.Server(horizonUrl);
     const accountData = await server.loadAccount(publicKey);
@@ -28,7 +21,6 @@ export async function runStellarSpike(
     return {
       success: true,
       publicKey,
-      secretKey,
       accountData,
     };
   } catch (error: unknown) {
