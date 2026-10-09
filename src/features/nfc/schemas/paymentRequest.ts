@@ -21,11 +21,30 @@ export const forbiddenKeyPatterns = [
   /keyPair/i,
 ];
 
-export function assertNoSecrets(obj: Record<string, any>) {
-  const keys = Object.keys(obj);
-  const matches = keys.filter((k) => forbiddenKeyPatterns.some((r) => r.test(k)));
-  if (matches.length > 0) {
-    throw new Error(`Payload contains forbidden fields: ${matches.join(', ')}`);
+export function assertNoSecrets(obj: unknown, path = '', seen = new Set<object>()): void {
+  if (obj === null || typeof obj !== 'object') {
+    return;
+  }
+
+  if (seen.has(obj)) {
+    return;
+  }
+  seen.add(obj);
+
+  if (Array.isArray(obj)) {
+    for (let i = 0; i < obj.length; i++) {
+      const currentPath = path ? `${path}[${i}]` : `[${i}]`;
+      assertNoSecrets(obj[i], currentPath, seen);
+    }
+    return;
+  }
+
+  for (const key of Object.keys(obj)) {
+    const currentPath = path ? `${path}.${key}` : key;
+    if (forbiddenKeyPatterns.some((pattern) => pattern.test(key))) {
+      throw new Error(`Payload contains forbidden fields: ${currentPath}`);
+    }
+    assertNoSecrets((obj as Record<string, any>)[key], currentPath, seen);
   }
 }
 
