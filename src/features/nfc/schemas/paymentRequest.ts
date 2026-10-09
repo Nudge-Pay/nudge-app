@@ -75,7 +75,11 @@ export class PaymentRequestValidationError extends Error {
 export function parsePaymentRequest(input: unknown): PaymentRequest {
   const result = paymentRequestSchema.safeParse(input);
   if (!result.success) {
-    const message = result.error.issues.map((issue) => issue.message).join('; ');
+    const message = result.error.issues
+      .map((issue) =>
+        issue.path.length ? `${issue.path.join('.')}: ${issue.message}` : issue.message
+      )
+      .join('; ');
     throw new PaymentRequestValidationError(message);
   }
 
