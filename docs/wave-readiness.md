@@ -8,9 +8,9 @@ Vela is an early open-source Stellar testnet payment prototype with an Expo clie
 
 Repositories:
 
-- https://github.com/VelaPayments/vela-payments
-- https://github.com/VelaPayments/vela-server
-- Preview: https://vela-payments.vercel.app/
+- https://github.com/Nudge-Pay/nudge-app (upstream lineage: https://github.com/VelaPayments/vela-payments)
+- https://github.com/Nudge-Pay/nudge-server (upstream lineage: https://github.com/VelaPayments/vela-server)
+- Preview: https://nudge-payments.vercel.app/
 
 ## Verified preparation
 
