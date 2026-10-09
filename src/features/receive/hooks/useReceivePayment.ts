@@ -69,9 +69,15 @@ export function useReceivePayment(): UseReceivePaymentResult {
   // stored, so the transition doesn't require calling setState from inside
   // an Effect (see https://react.dev/learn/you-might-not-need-an-effect).
   const [phase, setPhase] = useState<Exclude<ReceiveState, 'waiting'>>('idle');
+  const phaseRef = useRef<Exclude<ReceiveState, 'waiting'>>('idle');
   const [paymentRequest, setPaymentRequest] = useState<PaymentRequest | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [txHash, setTxHash] = useState<string | null>(null);
+
+  // Keep phaseRef in sync with state transitions
+  useEffect(() => {
+    phaseRef.current = phase;
+  }, [phase]);
 
   // Internal-only bookkeeping that is never read during render (only from
   // event handlers/effects), so it's safe to keep as a ref.
@@ -96,6 +102,7 @@ export function useReceivePayment(): UseReceivePaymentResult {
     (reason: string) => {
       cancelExpiryTimer();
       setError(reason);
+      phaseRef.current = 'failed';
       setPhase('failed');
       trackEvent(AnalyticsEvents.RECEIVE_FAILED, {
         amount_bucket: paymentRequest
@@ -113,6 +120,7 @@ export function useReceivePayment(): UseReceivePaymentResult {
       cancelExpiryTimer();
       setError(null);
       setTxHash(txHashArg ?? null);
+      phaseRef.current = 'success';
       setPhase('success');
       trackEvent(AnalyticsEvents.RECEIVE_COMPLETED, {
         amount_bucket: paymentRequest
@@ -125,9 +133,17 @@ export function useReceivePayment(): UseReceivePaymentResult {
   );
 
   const cancel = useCallback(async () => {
+    if (
+      phaseRef.current === 'success' ||
+      phaseRef.current === 'failed' ||
+      phaseRef.current === 'cancelled'
+    ) {
+      return;
+    }
     cancelExpiryTimer();
     receiveSession.cancelAll();
     await nfcWriter.cancel();
+    phaseRef.current = 'cancelled';
     setPhase('cancelled');
     trackEvent(AnalyticsEvents.RECEIVE_CANCELLED, {
       amount_bucket: paymentRequest ? amountBucket(paymentRequest.amount) : ('<1' as AmountBucket),
@@ -170,6 +186,7 @@ export function useReceivePayment(): UseReceivePaymentResult {
       throw new Error('Cannot start broadcast before prepare() has built a payment request');
     }
 
+    phaseRef.current = 'broadcasting';
     setPhase('broadcasting');
     trackEvent(AnalyticsEvents.RECEIVE_BROADCAST, {
       amount_bucket: amountBucket(paymentRequest.amount),
@@ -191,6 +208,7 @@ export function useReceivePayment(): UseReceivePaymentResult {
     setPaymentRequest(null);
     setError(null);
     setTxHash(null);
+    phaseRef.current = 'idle';
     setPhase('idle');
   }, [cancelExpiryTimer, nfcWriter]);
 
