@@ -21,4 +21,4 @@ npm run typecheck
 npm run build
 ```
 
-The build must produce `dist/index.html` and `dist/welcome.html`. Push to the connected production branch (`main`) to trigger Vercel. If deployment fails, inspect the Vercel build log for configuration or export errors.
+The build writes HTML artifacts for all static routes into `dist/`, including `dist/index.html` and `dist/welcome.html` (as well as group route mirrors such as `dist/(onboarding)/welcome.html`). With Vercel's `cleanUrls: true`, these routes are resolved cleanly as `/` and `/welcome`. Push to the connected production branch (`main`) to trigger Vercel. If deployment fails, inspect the Vercel build log for configuration or export errors.
