@@ -37,7 +37,7 @@ const AMOUNT_REGEX = /^(?:0|[1-9]\d*)(?:\.\d{1,7})?$/;
 
 export const paymentRequestSchema = z
   .object({
-    type: z.literal('payment_request'),
+    type: z.union([z.literal('payment-request'), z.literal('payment_request')]),
     recipient: z.string().regex(STELLAR_PUBLIC_KEY_REGEX, 'Invalid Stellar public key'),
     asset: z.string().refine(isSupportedAssetCode, 'Unsupported asset code'),
     amount: z
@@ -114,7 +114,7 @@ export function createPaymentRequest(
   const expiresAt = partial.expiresAt ?? timestamp + ttlSeconds;
 
   return parsePaymentRequest({
-    type: 'payment_request',
+    type: 'payment-request',
     recipient: partial.recipient,
     asset: partial.asset,
     amount: partial.amount,

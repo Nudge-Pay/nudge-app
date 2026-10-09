@@ -38,6 +38,7 @@ describe('NfcPayloadCodec', () => {
     expect(JSON.parse(new TextDecoder().decode(encodePaymentRequest(fixtureRequest)))).toEqual(
       fixture
     );
+    expect(encodePaymentRequest(decodePaymentRequest(bytes))).toEqual(bytes);
     const precise = {
       ...fixture,
       timestamp: '2026-05-29T12:00:00.123Z',

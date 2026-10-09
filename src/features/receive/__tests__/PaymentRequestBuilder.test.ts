@@ -16,7 +16,7 @@ describe('PaymentRequestBuilder', () => {
     });
 
     expect(request).toMatchObject({
-      type: 'payment_request',
+      type: 'payment-request',
       recipient: VALID_RECIPIENT,
       asset: 'USDC',
       amount: '25.50',
@@ -66,7 +66,7 @@ describe('PaymentRequestBuilder', () => {
     // so two calls within the same second may be identical — what must hold
     // is that every field is internally consistent and well-formed.
     for (const request of [first, second]) {
-      expect(request.type).toBe('payment_request');
+      expect(request.type).toBe('payment-request');
       expect(request.recipient).toBe(VALID_RECIPIENT);
       expect(request.asset).toBe('XLM');
       expect(request.amount).toBe('1');
