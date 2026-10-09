@@ -263,7 +263,7 @@ Repo basics: Green CI, `src/features/` structure, EAS dev build, UI theme and na
 As a developer, I want the CI pipeline to pass through each PR so that I can detect regressions before merge.
 
 **Agent context**  
-The workflow `.github/workflows/ci-client.yml` runs `npm run build`, `npm run lint` and Prettier, but `package.json` does not define `build` nor does it have ESLint/Prettier installed. This task unlocks the entire quality flow. Current repo: Expo 56 scaffold in `vela-payments/`.
+The workflow `.github/workflows/ci-client.yml` runs `npm run typecheck`, `npm run lint`, `npm run format:check`, `npm test`, and `npm run build`. `package.json` defines all requisite scripts (`build`, `typecheck`, `lint`, `lint:fix`, `format`, `format:check`, `test`, `test:watch`) and devDependencies (`eslint`, `prettier`, `eslint-config-expo`, `eslint-plugin-prettier`, `eslint-config-prettier`) are installed and configured.
 
 **Scope**
 
@@ -292,9 +292,9 @@ Out of scope:
 
 **Acceptance criteria**
 
-- [ ] `npm run build` exists and ends with exit 0
-- [ ] `npm run lint` exists and ends with exit 0
-- [ ] CI workflow passes in GitHub Actions
+- [x] `npm run build` exists and ends with exit 0
+- [x] `npm run lint` exists and ends with exit 0
+- [x] CI workflow passes in GitHub Actions
 
 **Tests**
 
@@ -303,9 +303,9 @@ Out of scope:
 
 **Definition of done**
 
-- [ ] `npm run lint` and `npx tsc --noEmit` pass without errors
-- [ ] Changes aligned with `src/features/` convention (FOLDER_LAYOUT)
-- [ ] Documented in README or internal docs if the task requires it
+- [x] `npm run lint` and `npx tsc --noEmit` pass without errors
+- [x] Changes aligned with `src/features/` convention (FOLDER_LAYOUT)
+- [x] Documented in README or internal docs if the task requires it
 
 **spec_ref**: Technical Architecture — Frontend
 
