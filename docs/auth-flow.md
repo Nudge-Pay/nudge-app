@@ -7,11 +7,14 @@ This document describes the complete passkey authentication lifecycle for the Ve
 | Area | Files |
 |---|---|
 | Service layer | `src/features/auth/services/PasskeyService.ts` |
+| Passkey spike | `src/features/auth/services/passkey-spike.ts` |
+| Native mocks | `src/features/auth/services/__mocks__/passkeyNative.ts` |
 | Error mapping | `src/features/auth/services/authErrors.ts` |
 | Service types | `src/features/auth/services/types.ts` |
+| API schemas | `src/features/auth/schemas/authApi.ts` |
 | API stub | `src/features/auth/services/AuthApiClient.ts` |
 | State machine | `src/features/auth/state/authStore.ts` |
-| React hook | `src/features/auth/hooks/useAuth.ts` |
+| React context & hook | `src/features/auth/hooks/useAuth.tsx` |
 | Session policy | `src/features/auth/hooks/useSessionPolicy.ts` |
 | Re-auth gate | `src/features/auth/hooks/useReAuth.ts` |
 | Route guard | `src/features/auth/components/AuthGuard.tsx` |
