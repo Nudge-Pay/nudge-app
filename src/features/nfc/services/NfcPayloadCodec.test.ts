@@ -125,4 +125,58 @@ describe('NfcPayloadCodec', () => {
       })
     ).toThrow(/expired/i);
   });
+
+  it('fails fast with PAYLOAD_VERSION_UNSUPPORTED when payment-request version is unsupported', () => {
+    const v2Payload = {
+      type: 'payment-request',
+      version: 2,
+      recipient: VALID_RECIPIENT,
+      asset: 'USDC',
+      amount: '10.00',
+    };
+    const bytes = new TextEncoder().encode(JSON.stringify(v2Payload));
+
+    try {
+      decodePaymentRequest(bytes);
+      throw new Error('Expected decodePaymentRequest to throw');
+    } catch (e: any) {
+      expect(e).toBeInstanceOf(NfcError);
+      expect(e.code).toBe('PAYLOAD_VERSION_UNSUPPORTED');
+      expect(e.message).toContain('Unsupported payment-request version: 2');
+    }
+  });
+
+  it('falls through to schema validation when non-payment JSON payload is provided', () => {
+    const nonPayment = {
+      type: 'custom_event',
+      foo: 'bar',
+    };
+    const bytes = new TextEncoder().encode(JSON.stringify(nonPayment));
+
+    try {
+      decodePaymentRequest(bytes);
+      throw new Error('Expected decodePaymentRequest to throw');
+    } catch (e: any) {
+      expect(e).toBeInstanceOf(NfcError);
+      expect(e.code).toBe('PAYLOAD_INVALID');
+    }
+  });
+
+  it('produces PAYLOAD_INVALID when version 1 payload is missing required fields', () => {
+    const missingField = {
+      type: 'payment-request',
+      version: 1,
+      timestamp: '2026-05-29T12:00:00.000Z',
+      expiresAt: '2026-05-29T12:15:00.000Z',
+    };
+    const bytes = new TextEncoder().encode(JSON.stringify(missingField));
+
+    try {
+      decodePaymentRequest(bytes);
+      throw new Error('Expected decodePaymentRequest to throw');
+    } catch (e: any) {
+      expect(e).toBeInstanceOf(NfcError);
+      expect(e.code).toBe('PAYLOAD_INVALID');
+    }
+  });
 });

@@ -9,6 +9,7 @@ export type NfcErrorCode =
   | 'PAYLOAD_OVERSIZE'
   | 'PAYLOAD_INVALID'
   | 'PAYLOAD_EXPIRED'
+  | 'PAYLOAD_VERSION_UNSUPPORTED'
   | 'NATIVE_ERROR';
 
 export class NfcError extends Error {
