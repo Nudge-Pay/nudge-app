@@ -28,8 +28,8 @@ export const Button = ({
   loading = false,
   disabled,
   style,
-  accessibilityRole: _accessibilityRole,
-  accessibilityState: _accessibilityState,
+  accessibilityRole = 'button',
+  accessibilityState,
   ...pressableProps
 }: ButtonProps) => {
   const theme = useTheme();
@@ -52,8 +52,12 @@ export const Button = ({
   return (
     <Pressable
       {...pressableProps}
-      accessibilityRole="button"
-      accessibilityState={{ disabled: isDisabled, busy: loading }}
+      accessibilityRole={accessibilityRole}
+      accessibilityState={{
+        disabled: isDisabled,
+        busy: loading,
+        ...accessibilityState,
+      }}
       disabled={isDisabled}
       style={({ pressed }) => [
         styles.base,
