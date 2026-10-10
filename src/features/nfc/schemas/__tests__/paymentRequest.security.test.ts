@@ -66,5 +66,25 @@ describe('paymentRequest security guard', () => {
     };
 
     expect(() => parsePaymentRequest(valid)).not.toThrow();
+  it('throws with path when forbidden key is nested inside an object', () => {
+    const bad = { metadata: { wallet: { keyPair: 'secret-key-material' } } };
+    expect(() => assertNoSecrets(bad)).toThrow(
+      'Payload contains forbidden fields: metadata.wallet.keyPair'
+    );
+  });
+
+  it('throws with path when forbidden key is nested inside an array element', () => {
+    const bad = {
+      metadata: { list: [{ safe: true }, { seed: 'mnemonic phrase' }] },
+    };
+    expect(() => assertNoSecrets(bad)).toThrow(
+      'Payload contains forbidden fields: metadata.list[1].seed'
+    );
+  });
+
+  it('handles self-referential objects without hanging the walk', () => {
+    const cyclic: any = { safe: true, metadata: {} };
+    cyclic.metadata.self = cyclic;
+    expect(() => assertNoSecrets(cyclic)).not.toThrow();
   });
 });
