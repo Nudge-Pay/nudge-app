@@ -89,22 +89,32 @@ sequenceDiagram
     participant Passkey (native)
     participant SecureKeyStore
     participant AuthProvider
+    participant WalletSetupView
+    participant AccountService
 
-    User->>WelcomeView: taps "Crear llave de acceso"
-    WelcomeView->>CreatePasskeyView: router.push
+    User->>WelcomeView: taps "Set up your wallet"
+    WelcomeView->>CreatePasskeyView: router.push('/(onboarding)/create-passkey')
 
-    User->>CreatePasskeyView: taps register button
-    CreatePasskeyView->>PasskeyService: register({ rpId, challenge, ... })
+    User->>CreatePasskeyView: taps "Create passkey"
+    CreatePasskeyView->>AuthProvider: registerPasskey('Vela user')
+    AuthProvider->>PasskeyService: register({ rpId, challenge, ... })
     PasskeyService->>Passkey (native): Passkey.create(request)
     Passkey (native)-->>User: biometric prompt (Face ID / fingerprint)
     User-->>Passkey (native): biometric confirmation
     Passkey (native)-->>PasskeyService: PasskeyCreateResult
     PasskeyService->>SecureKeyStore: set(PASSKEY_CREDENTIAL_ID, credentialId)
-    PasskeyService-->>CreatePasskeyView: { success: true, credential }
-    CreatePasskeyView->>AuthProvider: registerPasskey(displayName)
+    PasskeyService-->>AuthProvider: { success: true, credential }
     AuthProvider->>AuthProvider: dispatch PASSKEY_REGISTERED
-    AuthProvider->>SecureKeyStore: set(WALLET_PUBLIC_KEY, publicKey)
-    CreatePasskeyView->>CreatePasskeyView: show success → navigate to tabs
+    AuthProvider-->>CreatePasskeyView: success: true
+    CreatePasskeyView->>CreatePasskeyView: show success ("Passkey created")
+    CreatePasskeyView->>WalletSetupView: router.replace('/(onboarding)/wallet-setup') (after 1200ms)
+
+    User->>WalletSetupView: taps "Crear billetera"
+    WalletSetupView->>AccountService: createWallet()
+    AccountService->>SecureKeyStore: store Stellar keypair & public key
+    AccountService-->>WalletSetupView: wallet created / funded
+    WalletSetupView->>WalletSetupView: status 'ready'
+    WalletSetupView->>User: router.replace('/(tabs)/receive') (after 900ms)
 ```
 
 ---
