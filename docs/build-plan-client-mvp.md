@@ -265,6 +265,7 @@ As a developer, I want the CI pipeline to pass through each PR so that I can det
 
 **Agent context**  
 Completed. The quality pipeline is operational: `package.json` defines `build` (`expo export --platform web`), `typecheck` (`tsc --noEmit`), `lint`, `lint:fix`, `format`, `format:check`, `test` and `test:watch`. `.github/workflows/ci-client.yml` runs the complete quality flow (`typecheck`, `lint`, `format:check`, `test`, `build`).
+The workflow `.github/workflows/ci-client.yml` runs `npm run typecheck`, `npm run lint`, `npm run format:check`, `npm test`, and `npm run build`. `package.json` defines all requisite scripts (`build`, `typecheck`, `lint`, `lint:fix`, `format`, `format:check`, `test`, `test:watch`) and devDependencies (`eslint`, `prettier`, `eslint-config-expo`, `eslint-plugin-prettier`, `eslint-config-prettier`) are installed and configured.
 
 **Scope**
 
