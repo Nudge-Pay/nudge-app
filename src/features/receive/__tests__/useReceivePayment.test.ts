@@ -180,4 +180,18 @@ describe('useReceivePayment', () => {
     expect(result.current.state).toBe('failed');
     expect(result.current.error).toBe('trustline_missing');
   });
+
+  it.each(['nfc_error', 'unknown'] as const)(
+    'moves to failed and preserves reason %s',
+    async (reason) => {
+      const { result } = renderHookHarness(() => useReceivePayment());
+
+      act(() => {
+        result.current.confirmFailure(reason);
+      });
+
+      expect(result.current.state).toBe('failed');
+      expect(result.current.error).toBe(reason);
+    }
+  );
 });
