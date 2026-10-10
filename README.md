@@ -57,8 +57,8 @@ See [Stellar's asset model](https://developers.stellar.org/docs/learn/fundamenta
 ### Work that advances the Stellar integration
 
 - Coordinate the [shared payment contract](https://github.com/Nudge-Pay/nudge-server/issues/3) across both repositories.
-- [Cover trustline key ownership and reserve checks](https://github.com/Nudge-Pay/nudge-payments/issues/61).
-- [Improve NFC byte-size and decoding coverage](https://github.com/Nudge-Pay/nudge-payments/issues/17).
+- [Cover trustline key ownership and reserve checks](https://github.com/VelaPayments/vela-payments/issues/61).
+- [Improve NFC byte-size and decoding coverage](https://github.com/VelaPayments/vela-payments/issues/17).
 
 ## Project status
 
