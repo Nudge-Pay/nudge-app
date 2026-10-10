@@ -1,4 +1,4 @@
-<p align="center"><img src="assets/brand/nudge-mark.png" alt="Nudge" width="120" /></p>
+<p align="center"><img src="assets/brand/vela-mark.png" alt="Nudge" width="120" /></p>
 
 # Nudge — Mobile Client
 
