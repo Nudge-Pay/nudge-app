@@ -10,8 +10,8 @@
  * production builds.
  */
 
-import React, { useCallback, useState } from 'react';
-import { Alert, StyleSheet, TouchableOpacity, View } from 'react-native';
+import React, { useCallback } from 'react';
+import { Alert, StyleSheet, View } from 'react-native';
 
 import { Button } from '@/components/ui/Button';
 import { ThemedText } from '@/components/themed-text';
@@ -21,7 +21,6 @@ import { useAuth } from '../hooks/useAuth';
 export function SettingsAuthSection() {
   const { state, logout } = useAuth();
   const theme = useTheme();
-  const [pubkeyCopied, setPubkeyCopied] = useState(false);
 
   const publicKey = state.publicKey;
 
@@ -57,14 +56,6 @@ export function SettingsAuthSection() {
     );
   }, [logout]);
 
-  const handleCopyPubkey = useCallback(() => {
-    if (!publicKey) return;
-    // Clipboard.setStringAsync is available via expo-clipboard (not yet installed)
-    // For now, show a truncated preview — replace with Clipboard when available
-    setPubkeyCopied(true);
-    setTimeout(() => setPubkeyCopied(false), 2000);
-  }, [publicKey]);
-
   return (
     <View style={styles.container}>
       <ThemedText type="smallBold" style={[styles.sectionTitle, { color: theme.textSecondary }]}>
@@ -73,12 +64,10 @@ export function SettingsAuthSection() {
 
       {/* Public key display */}
       {publicKey ? (
-        <TouchableOpacity
-          onPress={handleCopyPubkey}
+        <View
           style={[styles.pubkeyRow, { backgroundColor: theme.backgroundElement }]}
-          accessibilityRole="button"
-          accessibilityLabel={pubkeyCopied ? 'Clave pública copiada' : 'Copiar clave pública'}
-          accessibilityHint="Toca para copiar tu clave pública de billetera"
+          accessibilityRole="summary"
+          accessibilityLabel={`Clave pública de la billetera: ${publicKey}`}
         >
           <ThemedText type="small" themeColor="textSecondary" style={styles.pubkeyLabel}>
             Clave pública
@@ -87,11 +76,12 @@ export function SettingsAuthSection() {
             type="code"
             numberOfLines={1}
             ellipsizeMode="middle"
+            selectable
             style={styles.pubkeyValue}
           >
-            {pubkeyCopied ? '¡Copiada!' : publicKey}
+            {publicKey}
           </ThemedText>
-        </TouchableOpacity>
+        </View>
       ) : (
         <View style={[styles.pubkeyRow, { backgroundColor: theme.backgroundElement }]}>
           <ThemedText type="small" themeColor="textSecondary">
