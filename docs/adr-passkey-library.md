@@ -26,13 +26,14 @@ We will adopt `react-native-passkey` as the primary passkey research library for
 
 ## Version pinning
 
-- `react-native-passkey@^0.0.7`
+- Current installed version: `react-native-passkey@^3.5.0` (pinned in `package.json`).
+- Originally evaluated version: `react-native-passkey@^0.0.7` (upgraded during implementation to v3.5.x for official Expo 56 compatibility and stable `Passkey` namespace bindings).
 
 ## Compatibility matrix
 
-- iOS: expected support on iOS 16+ devices with passkey capability.
-- Android: expected support on Android 12+ devices with a device-backed keystore.
-- Expo Go: unsupported for passkey verification and must use a dev-client or custom build.
+- iOS: iOS 16+ supporting native AuthenticationServices passkey capability via `Passkey.isSupported()`, `Passkey.create()`, and `Passkey.get()`.
+- Android: Android 12+ (API 31+) with device-backed keystore / Credential Manager supporting `Passkey.isSupported()`, `Passkey.create()`, and `Passkey.get()`.
+- Expo Go: unsupported for native passkey verification; dev-client or custom build required.
 
 ## Implementation notes
 
