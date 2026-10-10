@@ -40,7 +40,7 @@ polling).
 | `src/features/receive/schemas/receiveAmount.ts` | Zod validation for the amount + asset pair (CLI-062) |
 | `src/features/receive/services/PaymentRequestBuilder.ts` | Builds a `PaymentRequest` via the shared `createPaymentRequest` (CLI-063) |
 | `src/features/receive/services/receiveSession.ts` | Owns the request-expiry and wait-timeout timers, cancellable and ghost-free (CLI-069) |
-| `src/features/wallet/services/TrustlineService.ts` | Checks whether the receiver has a USDC trustline before a USDC request is broadcast (CLI-070) |
+| `src/features/wallet/services/TrustlineService.ts` | Checks whether the receiver has a USDC trustline and sufficient reserve backing before a USDC request is broadcast (CLI-070) |
 | `src/features/receive/hooks/useReceivePayment.ts` | FSM orchestrator + `ReceivePaymentProvider`/`useReceivePaymentContext` for cross-screen state (CLI-065) |
 | `src/features/receive/views/ReceiveHomeView.tsx` | Amount entry, asset selector, kicks off `prepare()` (CLI-061) |
 | `src/features/receive/views/ReceiveListeningView.tsx` | Starts the NFC broadcast, shows countdown + NFC status (CLI-064) |

@@ -25,6 +25,7 @@ describe('TrustlineService', () => {
 
   it('returns hasLine: true when the account has a matching USDC trustline', async () => {
     mockLoadAccount.mockResolvedValue({
+      subentry_count: 1,
       balances: [
         { asset_type: 'native', balance: '100' },
         {
@@ -44,15 +45,54 @@ describe('TrustlineService', () => {
 
   it('returns hasLine: false when no USDC trustline entry exists', async () => {
     mockLoadAccount.mockResolvedValue({
+      subentry_count: 0,
       balances: [{ asset_type: 'native', balance: '100' }],
     });
 
     const service = new TrustlineService();
     const result = await service.checkUsdcTrustline(PUBLIC_KEY);
 
-    // sufficientReserve is a static true for MVP (see TrustlineService) except
-    // when the account lookup itself fails — that's the "not found" case below.
     expect(result).toEqual({ hasLine: false, sufficientReserve: true });
+  });
+
+  it('returns sufficientReserve: false when native balance is below required reserve', async () => {
+    mockLoadAccount.mockResolvedValue({
+      subentry_count: 2,
+      balances: [
+        { asset_type: 'native', balance: '1.50', selling_liabilities: '0' },
+        {
+          asset_type: 'credit_alphanum4',
+          asset_code: 'USDC',
+          asset_issuer: USDC_ISSUER,
+          balance: '50',
+        },
+      ],
+    });
+
+    const service = new TrustlineService();
+    const result = await service.checkUsdcTrustline(PUBLIC_KEY);
+
+    expect(result).toEqual({ hasLine: true, sufficientReserve: false });
+  });
+
+  it('accounts for selling_liabilities when computing sufficientReserve', async () => {
+    mockLoadAccount.mockResolvedValue({
+      subentry_count: 1,
+      balances: [
+        { asset_type: 'native', balance: '10.00', selling_liabilities: '9.00' },
+        {
+          asset_type: 'credit_alphanum4',
+          asset_code: 'USDC',
+          asset_issuer: USDC_ISSUER,
+          balance: '50',
+        },
+      ],
+    });
+
+    const service = new TrustlineService();
+    const result = await service.checkUsdcTrustline(PUBLIC_KEY);
+
+    expect(result).toEqual({ hasLine: true, sufficientReserve: false });
   });
 
   it('returns false when the account has no balance entries', async () => {

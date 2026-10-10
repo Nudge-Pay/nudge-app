@@ -110,12 +110,26 @@ export class TrustlineService {
       const account = await server.loadAccount(publicKey);
 
       const hasLine = hasUsdcTrustline(account);
+      const sponsorship = account as Horizon.AccountResponse & {
+        num_sponsoring?: number;
+        num_sponsored?: number;
+      };
+
+      const native = account.balances.find((balance) => balance.asset_type === 'native');
+      const availableXlm = native
+        ? Number(native.balance) - Number(native.selling_liabilities ?? 0)
+        : 0;
+
+      const sufficientReserve = hasSufficientReserveForTrustline(
+        availableXlm,
+        account.subentry_count,
+        sponsorship.num_sponsoring ?? 0,
+        sponsorship.num_sponsored ?? 0
+      );
 
       return {
         hasLine,
-        // Reserve sizing (base reserve + subentry count) is a future concern — MVP
-        // assumes a trustline that exists has sufficient reserve backing it.
-        sufficientReserve: true,
+        sufficientReserve,
       };
     } catch {
       return { hasLine: false, sufficientReserve: false };
