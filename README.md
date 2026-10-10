@@ -89,9 +89,11 @@ See [contributing](CONTRIBUTING.md) and [Wave preparation](docs/wave-readiness.m
 1. Clone and install dependencies:
 
    ```bash
-   npm install
+   npm ci
    cp .env.example .env
    ```
+
+   > **Note:** Use `npm ci` for fresh clones and continuous integration to guarantee reproducible dependency trees matching `package-lock.json`. `npm install` should only be used when intentionally modifying dependencies or updating the lockfile.
 
 2. Build requirements for native features:
 
