@@ -16,6 +16,13 @@ export async function writeNdefJsonPayload(): Promise<NfcSpikeResult> {
   };
 }
 
+export async function writeNdefPaymentRequest(): Promise<NfcSpikeResult> {
+  return {
+    success: false,
+    reason: 'NFC write is not supported on web.',
+  };
+}
+
 export async function readNdefJsonPayload(): Promise<NfcSpikeResult> {
   return {
     success: false,

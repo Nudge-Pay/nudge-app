@@ -5,8 +5,9 @@ import { useState } from 'react';
 import {
   initializeNfcSpike,
   readNdefJsonPayload,
-  writeNdefJsonPayload,
+  writeNdefPaymentRequest,
 } from '@/features/nfc/services/nfc-spike';
+import { createPaymentRequest } from '@/features/nfc/schemas/paymentRequest';
 import {
   authenticateWithPasskey,
   createPasskeyCredential,
@@ -72,12 +73,13 @@ export default function C05Screen() {
   };
 
   const runNfcWrite = async () => {
-    const result = await writeNdefJsonPayload({
-      type: 'payment-request.v1',
-      timestamp: new Date().toISOString(),
+    const sampleRequest = createPaymentRequest({
+      recipient: 'GBBD47IF6LWK7P7MUGHC2XLYUUXV6ZLW75PN7CHLIW2NSIW74UZEST66',
+      asset: 'USDC',
       amount: '0.01',
-      asset: 'XLM',
+      ttlSeconds: 60,
     });
+    const result = await writeNdefPaymentRequest(sampleRequest);
     appendLog(result.success ? result.message : `NFC write failed: ${result.reason}`);
   };
 
