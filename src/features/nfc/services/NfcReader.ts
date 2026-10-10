@@ -1,10 +1,9 @@
 import { Platform } from 'react-native';
 
-import { NfcErrorCode } from './nfcErrors';
 import { NFC_READER_TIMEOUT_MS } from '@/features/nfc/constants/nfcConstants';
 import { decodePaymentRequest } from '@/features/nfc/services/NfcPayloadCodec';
 import type { PaymentRequest } from '@/features/nfc/schemas/paymentRequest';
-import { NfcError, toNfcError } from '@/features/nfc/services/NfcService.types';
+import { NfcError, toNfcError, type NfcErrorCode } from '@/features/nfc/services/NfcService.types';
 import { nfcService } from '@/features/nfc/services/nfcServiceImpl';
 
 export function isNfcAvailable(): boolean {
@@ -20,38 +19,38 @@ export class NfcReader {
   private cancelled = false;
 
   async startRead(timeoutMs = 30_000): Promise<any> {
-    if (!isNfcAvailable()) throw { code: NfcErrorCode.UNAVAILABLE };
+    if (!isNfcAvailable()) throw { code: 'UNSUPPORTED' as NfcErrorCode };
     this.cancelled = false;
 
     // Placeholder implementation: in real app delegate to react-native-nfc-manager
     return new Promise((resolve, reject) => {
       const timer = setTimeout(() => {
-        if (this.cancelled) return reject({ code: NfcErrorCode.CANCELLED });
-        reject({ code: NfcErrorCode.TIMEOUT });
+        if (this.cancelled) return reject({ code: 'SESSION_CANCELLED' as NfcErrorCode });
+        reject({ code: 'SESSION_TIMEOUT' as NfcErrorCode });
       }, timeoutMs);
 
       // Simulate a successful read only if not cancelled (for tests/mocks).
       // Real implementation will call native APIs and resolve with parsed payload.
       setTimeout(() => {
         clearTimeout(timer);
-        if (this.cancelled) return reject({ code: NfcErrorCode.CANCELLED });
+        if (this.cancelled) return reject({ code: 'SESSION_CANCELLED' as NfcErrorCode });
         resolve({ type: 'payment-request.v1', id: 'simulated', expiresAt: Date.now() / 1000 + 60 });
       }, 600);
     });
   }
 
   async startWrite(_payload: any, timeoutMs = 30_000): Promise<void> {
-    if (!isNfcAvailable()) throw { code: NfcErrorCode.UNAVAILABLE };
+    if (!isNfcAvailable()) throw { code: 'UNSUPPORTED' as NfcErrorCode };
     this.cancelled = false;
     return new Promise((resolve, reject) => {
       const timer = setTimeout(() => {
-        if (this.cancelled) return reject({ code: NfcErrorCode.CANCELLED });
-        reject({ code: NfcErrorCode.TIMEOUT });
+        if (this.cancelled) return reject({ code: 'SESSION_CANCELLED' as NfcErrorCode });
+        reject({ code: 'SESSION_TIMEOUT' as NfcErrorCode });
       }, timeoutMs);
 
       setTimeout(() => {
         clearTimeout(timer);
-        if (this.cancelled) return reject({ code: NfcErrorCode.CANCELLED });
+        if (this.cancelled) return reject({ code: 'SESSION_CANCELLED' as NfcErrorCode });
         resolve();
       }, 400);
     });

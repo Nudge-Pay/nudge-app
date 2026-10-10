@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import NfcReader, { isNfcAvailable } from '@/features/nfc/services/NfcReader';
-import { NfcErrorCode } from '@/features/nfc/services/nfcErrors';
+import type { NfcErrorCode } from '@/features/nfc/services/NfcService.types';
 import { AnalyticsEvents } from '@/constants/analytics-events';
 
 type Status = 'idle' | 'reading' | 'writing' | 'error';
@@ -20,7 +20,7 @@ export function useNfc() {
 
   const startReading = async (opts?: { timeoutMs?: number }) => {
     if (!isNfcAvailable()) {
-      const err = { code: NfcErrorCode.UNAVAILABLE };
+      const err = { code: 'UNSUPPORTED' as NfcErrorCode };
       setLastError(err);
       setStatus('error');
       return Promise.reject(err);
@@ -41,7 +41,7 @@ export function useNfc() {
 
   const startWriting = async (payload: any, opts?: { timeoutMs?: number }) => {
     if (!isNfcAvailable()) {
-      const err = { code: NfcErrorCode.UNAVAILABLE };
+      const err = { code: 'UNSUPPORTED' as NfcErrorCode };
       setLastError(err);
       setStatus('error');
       return Promise.reject(err);
