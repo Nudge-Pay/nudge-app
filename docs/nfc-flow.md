@@ -3,8 +3,8 @@
 ## Payment request wire format
 
 The NFC codec writes the shared `payment-request` version 1 contract used by
-the server. Its wire timestamps are ISO 8601 UTC strings; the app's internal
-`payment_request` object continues to use Unix seconds (including fractional seconds to preserve wire milliseconds). The codec converts
+the server with wire `type: "payment-request"`. Its wire timestamps are ISO 8601 UTC strings; the app's internal
+`PaymentRequest` object uses Unix seconds (including fractional seconds to preserve wire milliseconds) and supports `payment-request` canonically while allowing `payment_request` for backwards compatibility. The codec converts
 between these representations at the NFC boundary. The matching fixture is
 `src/features/nfc/fixtures/payment-request.v1.json` and is checked by the
 server contract tests as well.

@@ -14,11 +14,16 @@ const ISO_UTC_PATTERN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?Z$/;
 export function encodePaymentRequest(request: PaymentRequest): Uint8Array {
   const validated = parsePaymentRequest(request);
   const json = JSON.stringify({
-    ...validated,
     type: 'payment-request',
     version: 1,
+    recipient: validated.recipient,
+    asset: validated.asset,
+    amount: validated.amount,
     timestamp: new Date(Math.round(validated.timestamp * 1000)).toISOString(),
     expiresAt: new Date(Math.round(validated.expiresAt * 1000)).toISOString(),
+    ...(validated.memo !== undefined ? { memo: validated.memo } : {}),
+    ...(validated.requestId !== undefined ? { requestId: validated.requestId } : {}),
+    ...(validated.metadata !== undefined ? { metadata: validated.metadata } : {}),
   });
   const bytes = textEncoder.encode(json);
 
@@ -59,7 +64,11 @@ export function decodePaymentRequest(
 function fromPaymentRequestV1(input: unknown): unknown {
   if (!input || typeof input !== 'object' || Array.isArray(input)) return input;
   const payload = input as Record<string, unknown>;
-  if (payload.type !== 'payment-request' || payload.version !== 1) return input;
+  if (
+    (payload.type !== 'payment-request' && payload.type !== 'payment_request') ||
+    payload.version !== 1
+  )
+    return input;
   if (
     typeof payload.timestamp !== 'string' ||
     typeof payload.expiresAt !== 'string' ||
@@ -79,7 +88,7 @@ function fromPaymentRequestV1(input: unknown): unknown {
   const { version: _version, ...request } = payload;
   return {
     ...request,
-    type: 'payment_request',
+    type: 'payment-request',
     timestamp: timestampMs / 1000,
     expiresAt: expiresAtMs / 1000,
   };

@@ -45,7 +45,7 @@ Use **react-native-nfc-manager** (v3.17+) with the official Expo config plugin.
 
 - **Max NDEF payload:** 880 bytes (conservative; typical Type 2 tag usable ~888 bytes minus overhead)
 - **Encoding:** UTF-8 compact JSON (`application/json` MIME NDEF record)
-- **Schema:** `payment_request.v1` — see `src/features/nfc/schemas/paymentRequest.ts`
+- **Schema:** `payment-request.v1` (wire `type: "payment-request"`) — see `src/features/nfc/schemas/paymentRequest.ts`
 
 ## Permissions
 

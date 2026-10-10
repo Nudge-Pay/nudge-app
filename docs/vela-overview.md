@@ -209,7 +209,7 @@ Both devices display:
 
 ```json
 {
-  "type": "payment_request",
+  "type": "payment-request",
   "recipient": "G...",
   "asset": "USDC",
   "amount": "25.00",
