@@ -159,11 +159,21 @@ Implemented in `useSessionPolicy` (CLI-026) and `src/constants/session.ts`.
 
 ### NFC lock exemption
 
-The `useSessionPolicy` hook accepts an `nfcActive` boolean prop. When `true`, background lock is suppressed — this is the hook point for future NFC coordination. Wire via the NFC feature's active state:
+The `useSessionPolicy` hook automatically suppresses background lock and idle timeout while an NFC session is active (CLI-026 / CLI-052).
 
-```ts
-// In SessionPolicyMount — update when NFC state is available:
-useSessionPolicy({ nfcActive: nfcIsActive });
+- **Store subscription:** `useSessionPolicy` subscribes to `useNfcSessionStore(selectNfcActive)` by default.
+- **State transitions:**
+  - `nfcActive` is set to `true` when a session begins (`beginScanning()` or `beginWriting()`).
+  - `nfcActive` is cleared to `false` when a session finishes (`setSuccess()`), fails (`setError()`), or resets (`reset()`).
+- **Testing override:** `useSessionPolicy({ nfcActive: nfcActiveOverride })` accepts an optional `nfcActive` prop to override store detection during tests.
+- **Mount component:** `SessionPolicyMount` mounts inside the `AuthProvider` subtree without props and invokes `useSessionPolicy()` directly:
+
+```tsx
+// In SessionPolicyMount:
+export function SessionPolicyMount() {
+  useSessionPolicy();
+  return null;
+}
 ```
 
 ---
