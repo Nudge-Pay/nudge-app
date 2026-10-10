@@ -19,18 +19,48 @@ export const forbiddenKeyPatterns = [
   /password/i,
   /privKey/i,
   /keyPair/i,
+  /recovery/i,
 ];
-
-export function assertNoSecrets(obj: Record<string, any>) {
-  const keys = Object.keys(obj);
-  const matches = keys.filter((k) => forbiddenKeyPatterns.some((r) => r.test(k)));
-  if (matches.length > 0) {
-    throw new Error(`Payload contains forbidden fields: ${matches.join(', ')}`);
-  }
-}
 
 /** Stellar StrKey public key (G + 55 base32 chars). */
 const STELLAR_PUBLIC_KEY_REGEX = /^G[A-Z2-7]{55}$/;
+
+/** Stellar StrKey secret key (S + 55 base32 chars). */
+export const STELLAR_SECRET_KEY_REGEX = /^S[A-Z2-7]{55}$/;
+
+export function assertNoSecrets(obj: unknown, path = '', seen = new Set<object>()): void {
+  if (typeof obj === 'string') {
+    if (STELLAR_SECRET_KEY_REGEX.test(obj)) {
+      throw new Error(`Payload contains forbidden fields: ${path}`);
+    }
+    return;
+  }
+
+  if (obj === null || typeof obj !== 'object') {
+    return;
+  }
+
+  if (seen.has(obj)) {
+    return;
+  }
+  seen.add(obj);
+
+  if (Array.isArray(obj)) {
+    for (let i = 0; i < obj.length; i++) {
+      const currentPath = path ? `${path}[${i}]` : `[${i}]`;
+      assertNoSecrets(obj[i], currentPath, seen);
+    }
+    return;
+  }
+
+  for (const key of Object.keys(obj)) {
+    const currentPath = path ? `${path}.${key}` : key;
+    if (forbiddenKeyPatterns.some((pattern) => pattern.test(key))) {
+      throw new Error(`Payload contains forbidden fields: ${currentPath}`);
+    }
+    assertNoSecrets((obj as Record<string, any>)[key], currentPath, seen);
+  }
+}
 
 /** Decimal amount string (up to 7 fractional digits). */
 const AMOUNT_REGEX = /^(?:0|[1-9]\d*)(?:\.\d{1,7})?$/;
@@ -49,7 +79,11 @@ export const paymentRequestSchema = z
       ),
     timestamp: z.number().positive().max(8_640_000_000_000),
     expiresAt: z.number().positive().max(8_640_000_000_000),
-    memo: z.string().max(280).optional(),
+    memo: z
+      .string()
+      .max(280)
+      .refine((val) => !STELLAR_SECRET_KEY_REGEX.test(val), 'memo must not contain secret keys')
+      .optional(),
     requestId: z.string().min(1).max(128).optional(),
     metadata: z.record(z.string(), z.unknown()).optional(),
   })
@@ -73,9 +107,21 @@ export class PaymentRequestValidationError extends Error {
 }
 
 export function parsePaymentRequest(input: unknown): PaymentRequest {
+  if (input !== null && typeof input === 'object') {
+    try {
+      assertNoSecrets(input);
+    } catch (err: any) {
+      throw new PaymentRequestValidationError(err.message);
+    }
+  }
+
   const result = paymentRequestSchema.safeParse(input);
   if (!result.success) {
-    const message = result.error.issues.map((issue) => issue.message).join('; ');
+    const message = result.error.issues
+      .map((issue) =>
+        issue.path.length ? `${issue.path.join('.')}: ${issue.message}` : issue.message
+      )
+      .join('; ');
     throw new PaymentRequestValidationError(message);
   }
 
