@@ -23,6 +23,10 @@ npm run build
 
 Browser builds default to testnet preview settings. Jest uses its test setup environment and native mocks; passing tests does not establish physical NFC or passkey support. Use a native development build and the device checklist for those flows.
 
+### Agent configuration
+
+Assistant and agent skills are vendored under `.agents/skills/` as the single source of truth. The `.claude/skills/` directory symlinks to `.agents/skills/`. When maintaining or adding skills, always edit files under `.agents/skills/` directly rather than committing duplicated file trees in `.claude/skills/`.
+
 ## Pull requests
 
 - Branch from `main` and keep each PR focused on one issue.
