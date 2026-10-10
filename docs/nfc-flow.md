@@ -11,29 +11,44 @@ server contract tests as well.
 
 This document describes the NFC handshake, security constraints, and common troubleshooting steps for developers and beta testers.
 
-Overview
-- Roles: Writer (sender) and Reader (receiver).
-- Format: `payment-request.v1` JSON payload with non-sensitive fields only.
+### Overview
 
-Handshake
-1. Writer prepares `payment-request.v1` payload with `id` and optional `expiresAt` (epoch seconds).
-2. Reader calls `useNfc().startReading()` and waits for inbound payload.
-3. On read, the app validates payload using `validatePaymentRequest()` which enforces expiry and replay dedupe.
-4. If valid, proceed to presentation/confirm UI. If invalid, surface mapped Spanish error copy.
+- **Roles:** Writer (receiver/merchant) and Reader (payer).
+- **Format:** `payment-request.v1` JSON wire payload carrying non-sensitive fields only.
 
-Security rules
-- Forbidden fields: secret, private, seed, token, passphrase, password, privKey, keyPair.
-- Replay protection: 5-minute TTL dedupe window; duplicate requests rejected deterministically.
-- Clock skew tolerance: 30s default; configurable in validator.
+### Handshake
 
-Platform notes
-- iOS: Core NFC requires entitlement `com.apple.developer.nfc.readersession.formats` and `NFCReaderUsageDescription` in Info.plist. Only physical devices supported.
-- Android: Add `android.permission.NFC` and handle foreground dispatch. Test on Pixel and Samsung-class devices.
+1. **Receiver (Writer):** `ReceiveListeningView` calls `useReceivePayment` → `useNfcWriter().startWriting()` → `startWriterSession(request)`. The request is serialized via `encodePaymentRequest` and broadcast over NDEF push.
+2. **Payer (Reader):** `useNfcReader().startReading()` initiates `startReaderSession()`. When a tag or peer device is tapped, the raw bytes are dispatched.
+3. **Payload Decoding & Validation:** On receive, `decodePaymentRequest(payload, { rejectExpired: true })` validates JSON structure, version, and schema constraints, enforces the 5-minute clock skew window, and converts ISO-8601 timestamps back to Unix seconds.
+4. **Delivery & Confirmation:** The reader session dispatches the validated `PaymentRequest` to the payment confirmation screen. The internal `delivered` latch prevents duplicate delivery, and errors are surfaced as sanitized `NfcError` codes.
 
-Troubleshooting
-- NFC Unavailable: ensure device supports NFC and app has permissions.
-- NFC Disabled: ask user to enable in OS settings.
-- Timeout: ask users to bring devices closer and retry.
+### Security rules
+
+- **Forbidden fields:** `assertNoSecrets` rejects any payload containing `secret`, `private`, `seed`, `token`, `passphrase`, `password`, `privKey`, or `keyPair`.
+- **Replay & Lifetime protection:** Payloads enforce a maximum 24-hour request lifetime, a 5-minute clock window (`Math.abs(timestamp * 1000 - nowMs) <= 5 min`), and a session-level `delivered` latch. Expired or duplicate payloads fail fast.
+- **Payload size:** Payloads are strictly bounded to 880 bytes (`MAX_NDEF_PAYLOAD_BYTES`).
+
+### Platform notes
+
+- **iOS:** Core NFC requires entitlement `com.apple.developer.nfc.readersession.formats` and `NFCReaderUsageDescription` in Info.plist. Only physical devices supported.
+- **Android:** Add `android.permission.NFC` and handle foreground dispatch. Test on physical Pixel and Samsung devices.
+
+### Troubleshooting and Error Codes
+
+The app surfaces typed `NfcError` instances with standardized `NfcErrorCode` values:
+
+- `UNSUPPORTED`: Hardware lacks NFC capability or runtime does not support native NFC (e.g., web or simulator). Verify device specifications and dev-client build.
+- `DISABLED`: NFC is disabled in device system settings. Prompt the user to enable NFC in system settings.
+- `SESSION_ACTIVE`: Another NFC session is already in progress. Wait for the active session to finish or cancel before starting a new one.
+- `SESSION_CANCELLED`: Session was explicitly cancelled by the user or navigation change before a tag was read.
+- `SESSION_TIMEOUT`: Physical tap was not detected within the timeout window (45s for reader, 60s for writer). Prompt users to bring devices closer and align NFC antennas.
+- `EMPTY_NDEF`: NFC tag contains no NDEF records or payload is empty.
+- `PAYLOAD_MALFORMED`: NFC payload is not valid JSON or lacks mandatory wire fields.
+- `PAYLOAD_OVERSIZE`: Payload exceeds the 880-byte `MAX_NDEF_PAYLOAD_BYTES` limit.
+- `PAYLOAD_INVALID`: Payload violates schema rules (invalid Stellar public key, unsupported asset, non-positive amount).
+- `PAYLOAD_EXPIRED`: Request timestamp expired or is outside the allowable 5-minute timestamp clock skew.
+- `NATIVE_ERROR`: Underlying platform NFC driver reported a hardware or transport error.
 
 ## Validation and compatibility
 
