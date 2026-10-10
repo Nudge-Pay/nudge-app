@@ -1,7 +1,7 @@
 import { Buffer } from 'buffer';
 import NfcManager, { Ndef, NfcTech } from 'react-native-nfc-manager';
 
-import { createPaymentRequest } from '@/features/nfc/schemas/paymentRequest';
+import { createPaymentRequest, type PaymentRequest } from '@/features/nfc/schemas/paymentRequest';
 import { encodePaymentRequest } from '@/features/nfc/services/NfcPayloadCodec';
 import { nfcService } from '@/features/nfc/services/nfcServiceImpl';
 
@@ -22,26 +22,52 @@ export async function initializeNfcSpike(): Promise<{ supported: boolean; detail
   };
 }
 
-/** C05 spike: write raw JSON NDEF payload for PoC roundtrip on `/c05`. */
+/** C05 spike: write canonical PaymentRequest payload via NfcPayloadCodec on `/c05`. */
+export async function writeNdefPaymentRequest(request: PaymentRequest): Promise<NfcSpikeResult> {
+  try {
+    await NfcManager.start();
+    await NfcManager.requestTechnology(NfcTech.Ndef);
+
+    const bytes = encodePaymentRequest(request);
+    const record = Ndef.record(Ndef.TNF_MIME_MEDIA, JSON_TAG_TYPE, [], Array.from(bytes));
+    const ndefBytes = Ndef.encodeMessage([record]);
+    await NfcManager.ndefHandler.writeNdefMessage(ndefBytes);
+    await NfcManager.cancelTechnologyRequest();
+
+    return { success: true, message: `Wrote ${bytes.byteLength} bytes payload` };
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'NFC write failed.';
+    return { success: false, reason: message };
+  }
+}
+
+/** C05 spike: write raw JSON or PaymentRequest NDEF payload for PoC roundtrip on `/c05`. */
 export async function writeNdefJsonPayload(
-  payload: Record<string, unknown>
+  payload: PaymentRequest | Record<string, unknown>
 ): Promise<NfcSpikeResult> {
   try {
     await NfcManager.start();
     await NfcManager.requestTechnology(NfcTech.Ndef);
 
-    const jsonString = JSON.stringify(payload);
-    const record = Ndef.record(
-      Ndef.TNF_MIME_MEDIA,
-      JSON_TAG_TYPE,
-      [],
-      Array.from(Buffer.from(jsonString, 'utf8'))
-    );
-    const bytes = Ndef.encodeMessage([record]);
-    await NfcManager.ndefHandler.writeNdefMessage(bytes);
+    let bytes: Uint8Array;
+    if (
+      typeof payload === 'object' &&
+      payload !== null &&
+      'recipient' in payload &&
+      'asset' in payload &&
+      'amount' in payload
+    ) {
+      bytes = encodePaymentRequest(payload as PaymentRequest);
+    } else {
+      bytes = new TextEncoder().encode(JSON.stringify(payload));
+    }
+
+    const record = Ndef.record(Ndef.TNF_MIME_MEDIA, JSON_TAG_TYPE, [], Array.from(bytes));
+    const ndefBytes = Ndef.encodeMessage([record]);
+    await NfcManager.ndefHandler.writeNdefMessage(ndefBytes);
     await NfcManager.cancelTechnologyRequest();
 
-    return { success: true, message: `Wrote ${jsonString.length} bytes payload` };
+    return { success: true, message: `Wrote ${bytes.byteLength} bytes payload` };
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : 'NFC write failed.';
     return { success: false, reason: message };

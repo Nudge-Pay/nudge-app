@@ -99,6 +99,42 @@ export const paymentRequestSchema = z
 
 export type PaymentRequest = z.infer<typeof paymentRequestSchema>;
 
+/** Wire ISO UTC string pattern. */
+export const ISO_UTC_PATTERN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?Z$/;
+
+export const paymentRequestWireSchema = z
+  .object({
+    type: z.literal('payment-request'),
+    version: z.literal(1),
+    recipient: z.string().regex(STELLAR_PUBLIC_KEY_REGEX, 'Invalid Stellar public key'),
+    asset: z.string().refine(isSupportedAssetCode, 'Unsupported asset code'),
+    amount: z
+      .string()
+      .regex(AMOUNT_REGEX, 'Amount must be a positive decimal string')
+      .refine(
+        (value) => Number.isFinite(Number(value)) && Number(value) > 0,
+        'Amount must be finite and greater than zero'
+      ),
+    timestamp: z.string().regex(ISO_UTC_PATTERN, 'timestamp must be an ISO-8601 UTC string'),
+    expiresAt: z.string().regex(ISO_UTC_PATTERN, 'expiresAt must be an ISO-8601 UTC string'),
+    memo: z.string().max(280).optional(),
+    requestId: z.string().min(1).max(128).optional(),
+    metadata: z.record(z.string(), z.unknown()).optional(),
+  })
+  .strict();
+
+export type PaymentRequestWire = z.infer<typeof paymentRequestWireSchema>;
+
+export function parsePaymentRequestWire(input: unknown): PaymentRequestWire {
+  const result = paymentRequestWireSchema.safeParse(input);
+  if (!result.success) {
+    const message = result.error.issues.map((issue) => issue.message).join('; ');
+    throw new PaymentRequestValidationError(message);
+  }
+
+  return result.data;
+}
+
 export class PaymentRequestValidationError extends Error {
   constructor(message: string) {
     super(message);
