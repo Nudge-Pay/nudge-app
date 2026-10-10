@@ -1,6 +1,7 @@
 import { createElement } from 'react';
 import { act, create, type ReactTestRenderer } from 'react-test-renderer';
 
+import { AnalyticsEvents } from '@/constants/analytics-events';
 import { useReceivePayment } from '@/features/receive/hooks/useReceivePayment';
 
 const VALID_RECIPIENT = 'GBBD47IF6LWK7P7MUGHC2XLYUUXV6ZLW75PN7CHLIW2NSIW74UZEST66';
@@ -194,4 +195,105 @@ describe('useReceivePayment', () => {
       expect(result.current.error).toBe(reason);
     }
   );
+  it('leaves state at success and emits no RECEIVE_CANCELLED when cancel() is called after confirmSuccess', async () => {
+    const { result } = renderHookHarness(() => useReceivePayment());
+
+    await act(async () => {
+      await result.current.prepare('5', 'XLM', VALID_RECIPIENT);
+    });
+    await act(async () => {
+      await result.current.startBroadcast();
+    });
+
+    act(() => {
+      result.current.confirmSuccess('tx-success-123');
+    });
+
+    expect(result.current.state).toBe('success');
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      AnalyticsEvents.RECEIVE_COMPLETED,
+      expect.any(Object)
+    );
+
+    mockTrackEvent.mockClear();
+
+    await act(async () => {
+      await result.current.cancel();
+    });
+
+    expect(result.current.state).toBe('success');
+    expect(mockTrackEvent).not.toHaveBeenCalledWith(
+      AnalyticsEvents.RECEIVE_CANCELLED,
+      expect.any(Object)
+    );
+  });
+
+  it('leaves state at failed and emits no RECEIVE_CANCELLED when cancel() is called after confirmFailure', async () => {
+    const { result } = renderHookHarness(() => useReceivePayment());
+
+    await act(async () => {
+      await result.current.prepare('5', 'XLM', VALID_RECIPIENT);
+    });
+    await act(async () => {
+      await result.current.startBroadcast();
+    });
+
+    act(() => {
+      result.current.confirmFailure('nfc_error');
+    });
+
+    expect(result.current.state).toBe('failed');
+    expect(mockTrackEvent).toHaveBeenCalledWith(AnalyticsEvents.RECEIVE_FAILED, expect.any(Object));
+
+    mockTrackEvent.mockClear();
+
+    await act(async () => {
+      await result.current.cancel();
+    });
+
+    expect(result.current.state).toBe('failed');
+    expect(mockTrackEvent).not.toHaveBeenCalledWith(
+      AnalyticsEvents.RECEIVE_CANCELLED,
+      expect.any(Object)
+    );
+  });
+
+  it('cancels from the waiting state and emits RECEIVE_CANCELLED exactly once', async () => {
+    const { result, rerender } = renderHookHarness(() => useReceivePayment());
+
+    await act(async () => {
+      await result.current.prepare('5', 'XLM', VALID_RECIPIENT);
+    });
+    await act(async () => {
+      await result.current.startBroadcast();
+    });
+
+    mockNfcStatus = 'success';
+    rerender();
+    expect(result.current.state).toBe('waiting');
+
+    mockTrackEvent.mockClear();
+
+    await act(async () => {
+      await result.current.cancel();
+    });
+
+    expect(result.current.state).toBe('cancelled');
+    expect(mockTrackEvent).toHaveBeenCalledWith(
+      AnalyticsEvents.RECEIVE_CANCELLED,
+      expect.any(Object)
+    );
+
+    // Calling cancel again while already cancelled is a no-op
+    mockTrackEvent.mockClear();
+    await act(async () => {
+      await result.current.cancel();
+    });
+
+    expect(result.current.state).toBe('cancelled');
+    expect(mockTrackEvent).not.toHaveBeenCalledWith(
+      AnalyticsEvents.RECEIVE_CANCELLED,
+      expect.any(Object)
+    );
+  });
 });
