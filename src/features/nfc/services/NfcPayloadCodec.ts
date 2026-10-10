@@ -74,6 +74,16 @@ function fromPaymentRequestV1(input: unknown): unknown {
     payload.version !== 1
   )
     return input;
+  if (payload.type !== 'payment-request') return input;
+
+  if ('version' in payload && payload.version !== 1) {
+    throw new NfcError(
+      'PAYLOAD_VERSION_UNSUPPORTED',
+      `Unsupported payment-request version: ${String(payload.version)}`
+    );
+  }
+
+  if (payload.version !== 1) return input;
   if (
     typeof payload.timestamp !== 'string' ||
     typeof payload.expiresAt !== 'string' ||
