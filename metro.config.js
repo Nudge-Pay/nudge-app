@@ -10,4 +10,13 @@ config.resolver.extraNodeModules = {
   crypto: require.resolve('crypto-browserify'),
 };
 
+if (process.env.NODE_ENV === 'production') {
+  const existingBlockList = Array.isArray(config.resolver.blockList)
+    ? config.resolver.blockList
+    : config.resolver.blockList
+      ? [config.resolver.blockList]
+      : [];
+  config.resolver.blockList = [...existingBlockList, /src[/\\]app[/\\]c05\.tsx$/];
+}
+
 module.exports = config;
