@@ -258,12 +258,13 @@ Repo basics: Green CI, `src/features/` structure, EAS dev build, UI theme and na
 | Blocking | Hard |
 | Depends on | — |
 | Server contract | — |
+| Status | Completed |
 
 **User story**  
 As a developer, I want the CI pipeline to pass through each PR so that I can detect regressions before merge.
 
 **Agent context**  
-The workflow `.github/workflows/ci-client.yml` runs `npm run build`, `npm run lint` and Prettier, but `package.json` does not define `build` nor does it have ESLint/Prettier installed. This task unlocks the entire quality flow. Current repo: Expo 56 scaffold in `vela-payments/`.
+Completed. The quality pipeline is operational: `package.json` defines `build` (`expo export --platform web`), `typecheck` (`tsc --noEmit`), `lint`, `lint:fix`, `format`, `format:check`, `test` and `test:watch`. `.github/workflows/ci-client.yml` runs the complete quality flow (`typecheck`, `lint`, `format:check`, `test`, `build`).
 
 **Scope**
 
@@ -278,7 +279,6 @@ Out of scope:
 
 **Files**
 
-- (none)
 - Modify: `package.json`
 - Modify: `.github/workflows/ci-client.yml`
 
@@ -292,9 +292,9 @@ Out of scope:
 
 **Acceptance criteria**
 
-- [ ] `npm run build` exists and ends with exit 0
-- [ ] `npm run lint` exists and ends with exit 0
-- [ ] CI workflow passes in GitHub Actions
+- [x] `npm run build` exists and ends with exit 0
+- [x] `npm run lint` exists and ends with exit 0
+- [x] CI workflow passes in GitHub Actions
 
 **Tests**
 
@@ -303,9 +303,9 @@ Out of scope:
 
 **Definition of done**
 
-- [ ] `npm run lint` and `npx tsc --noEmit` pass without errors
-- [ ] Changes aligned with `src/features/` convention (FOLDER_LAYOUT)
-- [ ] Documented in README or internal docs if the task requires it
+- [x] `npm run lint` and `npx tsc --noEmit` pass without errors
+- [x] Changes aligned with `src/features/` convention (FOLDER_LAYOUT)
+- [x] Documented in README or internal docs if the task requires it
 
 **spec_ref**: Technical Architecture — Frontend
 
@@ -322,12 +322,13 @@ Out of scope:
 | Blocking | Soft |
 | Depends on | CLI-001 |
 | Server contract | — |
+| Status | Completed |
 
 **User story**  
 As a developer, I want consistent lint and formatting rules so that I can maintain code quality across the team.
 
 **Agent context**  
-Expo 56 supports `expo lint` which wraps ESLint. Install `eslint`, `eslint-config-expo`, `prettier` and config files in root. Follow conventions of the official Expo template.
+Completed. Expo 56 linting and Prettier formatting are configured with `eslint.config.mjs`, `.prettierrc`, and `.prettierignore`. The root `package.json` provides `lint`, `lint:fix`, `format`, and `format:check`.
 
 **Scope**
 
@@ -356,8 +357,8 @@ Out of scope:
 
 **Acceptance criteria**
 
-- [ ] `npx expo lint` without errors in code base
-- [ ] `npm run format` formats without pending changes after execution
+- [x] `npx expo lint` without errors in code base
+- [x] `npm run format` formats without pending changes after execution
 
 **Tests**
 
@@ -366,9 +367,9 @@ Out of scope:
 
 **Definition of done**
 
-- [ ] `npm run lint` and `npx tsc --noEmit` pass without errors
-- [ ] Changes aligned with `src/features/` convention (FOLDER_LAYOUT)
-- [ ] Documented in README or internal docs if the task requires it
+- [x] `npm run lint` and `npx tsc --noEmit` pass without errors
+- [x] Changes aligned with `src/features/` convention (FOLDER_LAYOUT)
+- [x] Documented in README or internal docs if the task requires it
 
 **spec_ref**: Technical Architecture — Frontend
 
