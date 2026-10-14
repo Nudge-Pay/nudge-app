@@ -70,7 +70,8 @@
     "lint": "expo lint",
     "lint:fix": "expo lint --fix",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "check:config": "node scripts/check-config-consistency.mjs"
   },
   "jest": {
     "preset": "jest-expo",
