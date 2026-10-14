@@ -7,6 +7,10 @@ on:
     branches: [develop, main]
   pull_request:
     branches: [develop, main]
+  # Scheduled nightly quality-gate (issue #46) — the same quality steps run
+  # once a night so drift in dependencies/config surfaces even without a push.
+  schedule:
+    - cron: '15 3 * * *'
 
 # Cancel superseded runs on the same ref to save CI minutes.
 concurrency:
@@ -29,6 +33,20 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      # issue #45 — a committed .env must fail the build before anything else.
+      - name: "Guard — no committed .env"
+        run: |
+          if git ls-files | grep -qE '(^|/)\.env$|\.env\.(local|production|development|staging)$'; then
+            echo '::error::a .env file is committed — secrets must never reach the repo'
+            git ls-files | grep -E '(^|/)\.env$|\.env\.(local|production|development|staging)$'
+            exit 1
+          fi
+          echo 'no committed .env files — clean'
+
+      # issue #44 — app.json must stay a subset of app.config.ts (no plugin/asset drift).
+      - name: Check app.json ⊆ app.config.ts
+        run: node scripts/check-app-config-consistency.mjs
 
       - name: Type-check (build)
         run: npm run typecheck
