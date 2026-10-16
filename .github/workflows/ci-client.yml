@@ -7,6 +7,10 @@ on:
     branches: [develop, main]
   pull_request:
     branches: [develop, main]
+  # Scheduled runs execute on the default branch (main) nightly so dependency,
+  # runner, or SDK regressions are detected even when no PR is opened (#46).
+  schedule:
+    - cron: '17 3 * * *'
 
 # Cancel superseded runs on the same ref to save CI minutes.
 concurrency:
