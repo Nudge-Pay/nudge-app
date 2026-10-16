@@ -30,6 +30,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Check Expo config consistency
+        run: node scripts/check-config-consistency.mjs
+
       - name: Type-check (build)
         run: npm run typecheck
 
