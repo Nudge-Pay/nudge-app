@@ -56,6 +56,23 @@ if (jsonSplash && configSplash && jsonSplash !== configSplash) {
   errors.push(`splash image drift: app.json '${jsonSplash}' vs app.config.ts '${configSplash}'`);
 }
 
+// Required NFC + asset surface in the resolved config (issue #44) — these must
+// exist in app.config.ts or the app silently loses NFC and/or icons.
+const REQUIRED = [
+  ['NFC entitlement (com.apple.developer.nfc.readersession.formats)', /com\.apple\.developer\.nfc\.readersession\.formats/],
+  ['NFCReaderUsageDescription', /NFCReaderUsageDescription\s*:/],
+  ['Android android.permission.NFC', /android\.permission\.NFC/],
+];
+for (const [label, re] of REQUIRED) {
+  if (!re.test(configSrc)) errors.push(`resolved config missing ${label}`);
+}
+// Icon/splash asset paths must match between the two files.
+const configIcon = (configSrc.match(/icon:\s*'([^']+)'/) || [])[1];
+const jsonIcon = appJson.icon ?? appJson.android?.icon;
+if (configIcon && jsonIcon && configIcon !== jsonIcon) {
+  errors.push(`icon drift: app.json '${jsonIcon}' vs app.config.ts '${configIcon}'`);
+}
+
 if (errors.length) {
   console.error('app-config consistency FAILED:');
   for (const e of errors) console.error(`  ✗ ${e}`);
