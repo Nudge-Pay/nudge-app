@@ -21,7 +21,7 @@ function configPluginNames(src) {
   const names = new Set();
   for (const m of src.matchAll(/'([a-z0-9-]+)'|(?:^|\s)\[\s*'([a-z0-9-]+)'/g)) {
     const n = m[1] || m[2];
-    if (n && n.startsWith('expo-') || n === 'react-native-nfc-manager') names.add(n);
+    if ((n && n.startsWith('expo-')) || n === 'react-native-nfc-manager') names.add(n);
   }
   return names;
 }
@@ -49,7 +49,7 @@ for (const p of jsonPlugins) {
 
 // Shared assets must agree — the splash image both files reference.
 const jsonSplash = appJson.plugins?.find(
-  (p) => Array.isArray(p) && p[0] === 'expo-splash-screen',
+  (p) => Array.isArray(p) && p[0] === 'expo-splash-screen'
 )?.[1]?.android?.image;
 const configSplash = (configSrc.match(/image:\s*'([^']+)'/) || [])[1];
 if (jsonSplash && configSplash && jsonSplash !== configSplash) {
@@ -59,7 +59,10 @@ if (jsonSplash && configSplash && jsonSplash !== configSplash) {
 // Required NFC + asset surface in the resolved config (issue #44) — these must
 // exist in app.config.ts or the app silently loses NFC and/or icons.
 const REQUIRED = [
-  ['NFC entitlement (com.apple.developer.nfc.readersession.formats)', /com\.apple\.developer\.nfc\.readersession\.formats/],
+  [
+    'NFC entitlement (com.apple.developer.nfc.readersession.formats)',
+    /com\.apple\.developer\.nfc\.readersession\.formats/,
+  ],
   ['NFCReaderUsageDescription', /NFCReaderUsageDescription\s*:/],
   ['Android android.permission.NFC', /android\.permission\.NFC/],
 ];

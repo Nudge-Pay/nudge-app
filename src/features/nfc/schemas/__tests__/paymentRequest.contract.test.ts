@@ -16,7 +16,7 @@ describe('payment-request.v1.json contract test', () => {
     const bytes = new TextEncoder().encode(rawContent);
     const decoded = decodePaymentRequest(bytes);
 
-    expect(decoded.type).toBe('payment_request');
+    expect(decoded.type).toBe('payment-request');
     expect(decoded.recipient).toBe(fixture.recipient);
     expect(decoded.asset).toBe(fixture.asset);
     expect(decoded.amount).toBe(fixture.amount);

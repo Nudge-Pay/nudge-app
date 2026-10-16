@@ -6,6 +6,7 @@ export const NfcErrorMessages: Record<NfcErrorCode, string> = {
   SESSION_ACTIVE: 'Ya hay una sesión NFC activa.',
   SESSION_CANCELLED: 'Operación NFC cancelada.',
   SESSION_TIMEOUT: 'La operación NFC expiró. Acerca los dispositivos y vuelve a intentar.',
+  PAYLOAD_VERSION_UNSUPPORTED: 'Versión de carga NFC no compatible. Actualiza la app.',
   EMPTY_NDEF: 'La etiqueta NFC está vacía.',
   PAYLOAD_INVALID: 'Solicitud NFC inválida o insegura. No se procesó la petición.',
   PAYLOAD_EXPIRED: 'La solicitud de pago ha expirado.',

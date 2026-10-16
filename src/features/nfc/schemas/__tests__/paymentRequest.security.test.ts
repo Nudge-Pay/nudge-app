@@ -66,6 +66,8 @@ describe('paymentRequest security guard', () => {
     };
 
     expect(() => parsePaymentRequest(valid)).not.toThrow();
+  });
+
   it('throws with path when forbidden key is nested inside an object', () => {
     const bad = { metadata: { wallet: { keyPair: 'secret-key-material' } } };
     expect(() => assertNoSecrets(bad)).toThrow(
