@@ -27,11 +27,11 @@ function ActionButton({ label, onPress }: { label: string; onPress: () => Promis
 }
 
 export default function C05Screen() {
+  const [logs, setLogs] = useState<string[]>([]);
+
   if (!__DEV__) {
     return null;
   }
-
-  const [logs, setLogs] = useState<string[]>([]);
 
   const appendLog = (message: string) => {
     setLogs((current) => [message, ...current].slice(0, 12));

@@ -1,5 +1,3 @@
-import { Horizon } from '@stellar/stellar-sdk';
-
 import { SecureKeyStore } from '@/lib/SecureKeyStore';
 import {
   ensureUsdcTrustline,
