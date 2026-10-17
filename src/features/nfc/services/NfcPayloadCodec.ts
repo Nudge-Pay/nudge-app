@@ -68,8 +68,7 @@ export function decodePaymentRequest(
 function fromPaymentRequestV1(input: unknown): unknown {
   if (!input || typeof input !== 'object' || Array.isArray(input)) return input;
   const payload = input as Record<string, unknown>;
-  if (payload.type !== 'payment-request' && payload.type !== 'payment_request')
-    return input;
+  if (payload.type !== 'payment-request' && payload.type !== 'payment_request') return input;
 
   if ('version' in payload && payload.version !== 1) {
     throw new NfcError(
