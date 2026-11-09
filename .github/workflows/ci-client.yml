@@ -21,6 +21,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Reject tracked .env files
+        run: bash scripts/check-tracked-env.sh
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
