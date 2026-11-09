@@ -7,6 +7,9 @@ on:
     branches: [develop, main]
   pull_request:
     branches: [develop, main]
+  # Scheduled workflows run on the default branch (main), retaining the full quality gate.
+  schedule:
+    - cron: '23 3 * * *'
 
 # Cancel superseded runs on the same ref to save CI minutes.
 concurrency:
